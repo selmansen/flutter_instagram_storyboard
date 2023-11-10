@@ -23,28 +23,18 @@ class StoryPageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
-      backgroundColor: Colors.transparent,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ClipRRect(
-          borderRadius: borderRadius ??
-              BorderRadius.circular(
-                12.0,
-              ),
-          child: Stack(
-            children: [
-              body,
-              IgnorePointer(
-                child: GradientTransition(
-                  width: double.infinity,
-                  height: 100.0,
-                  baseColor: Colors.black.withOpacity(.7),
-                  isReversed: true,
-                ),
-              ),
-            ],
+      body: Stack(
+        children: [
+          body,
+          IgnorePointer(
+            child: GradientTransition(
+              width: double.infinity,
+              height: 100.0,
+              baseColor: Colors.black.withOpacity(.7),
+              isReversed: true,
+            ),
           ),
-        ),
+        ],
       ),
       bottomNavigationBar: bottomNavigationBar,
     );

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_storyboard/src/story_button.dart';
-import 'package:flutter_instagram_storyboard/src/story_page_transform.dart';
-
-import 'story_route.dart';
+import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 
 class StoryListView extends StatefulWidget {
   final List<StoryButtonData> buttonDatas;
@@ -21,15 +18,15 @@ class StoryListView extends StatefulWidget {
   const StoryListView({
     Key? key,
     required this.buttonDatas,
-    this.buttonSpacing = 10.0,
-    this.paddingLeft = 10.0,
-    this.listHeight = 120.0,
-    this.paddingRight = 10.0,
-    this.paddingTop = 10.0,
-    this.paddingBottom = 10.0,
+    this.buttonSpacing = 14,
+    this.paddingLeft = 16.0,
+    this.listHeight = 126.0,
+    this.paddingRight = 16.0,
+    this.paddingTop = 16.0,
+    this.paddingBottom = 16.0,
     this.physics,
     this.pageTransform,
-    this.buttonWidth = 100.0,
+    this.buttonWidth = 70.0,
     this.safeAreaTop = true,
     this.safeAreaBottom = true,
   }) : super(key: key);

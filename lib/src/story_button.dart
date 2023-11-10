@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
+import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
 import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
-import 'package:flutter_instagram_storyboard/src/story_page_transform.dart';
-
-import 'first_build_mixin.dart';
-import 'story_page_container_view.dart';
+import 'package:flutter_instagram_storyboard/src/story_page_container_view.dart';
 
 class StoryButton extends StatefulWidget {
   final StoryButtonData buttonData;
@@ -28,9 +27,7 @@ class StoryButton extends StatefulWidget {
   State<StoryButton> createState() => _StoryButtonState();
 }
 
-class _StoryButtonState extends State<StoryButton>
-    with SetStateAfterFrame, FirstBuildMixin
-    implements IButtonPositionable, IWatchMarkable {
+class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, FirstBuildMixin implements IButtonPositionable, IWatchMarkable {
   double? _buttonWidth;
 
   @override
@@ -63,7 +60,12 @@ class _StoryButtonState extends State<StoryButton>
     }
     return SizedBox(
       width: _buttonWidth,
-      child: widget.buttonData.child,
+      child: widget.buttonData._isWatched
+          ? Opacity(
+              opacity: .6,
+              child: widget.buttonData.child,
+            )
+          : widget.buttonData.child,
     );
   }
 
@@ -111,6 +113,7 @@ class _StoryButtonState extends State<StoryButton>
       widget.buttonData.markAsWatched();
     });
     widget.onPressed.call(widget.buttonData);
+    widget.buttonData.onPress!();
   }
 
   @override
@@ -120,42 +123,30 @@ class _StoryButtonState extends State<StoryButton>
         AspectRatio(
           aspectRatio: widget.buttonData.aspectRatio,
           child: Container(
-            decoration: widget.buttonData._isWatched
-                ? null
-                : widget.buttonData.borderDecoration,
+            decoration: widget.buttonData._isWatched ? widget.buttonData.watchBorderDecoration : widget.buttonData.borderDecoration,
             child: Padding(
               padding: EdgeInsets.all(
                 widget.buttonData.borderOffset,
               ),
-              child: ClipRRect(
-                borderRadius:
-                    widget.buttonData.buttonDecoration.borderRadius?.resolve(
-                          null,
-                        ) ??
-                        const BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                child: Stack(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: widget.buttonData.buttonDecoration,
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        splashFactory: widget.buttonData.inkFeatureFactory ??
-                            InkRipple.splashFactory,
-                        onTap: _onTap,
-                        child: const SizedBox(
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+              child: Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: widget.buttonData.buttonDecoration,
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashFactory: widget.buttonData.inkFeatureFactory ?? InkRipple.splashFactory,
+                      onTap: _onTap,
+                      child: const SizedBox(
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -207,6 +198,7 @@ class StoryButtonData {
   final double aspectRatio;
   final BoxDecoration buttonDecoration;
   final BoxDecoration borderDecoration;
+  final BoxDecoration watchBorderDecoration;
   final double borderOffset;
   final InteractiveInkFeatureFactory? inkFeatureFactory;
   final Widget child;
@@ -221,6 +213,7 @@ class StoryButtonData {
   final double timelineSpacing;
   final EdgeInsets? timlinePadding;
   final IsVisibleCallback isVisibleCallback;
+  final Function()? onPress;
 
   /// Usualy this is required for the final story
   /// to pop it out to its button mosition
@@ -251,8 +244,8 @@ class StoryButtonData {
     this.storyWatchedContract = StoryWatchedContract.onStoryEnd,
     this.storyController,
     this.aspectRatio = 1.0,
-    this.timelineThikness = 2.0,
-    this.timelineSpacing = 8.0,
+    this.timelineThikness = 4,
+    this.timelineSpacing = 11,
     this.timlinePadding,
     this.inkFeatureFactory,
     this.pageAnimationCurve,
@@ -262,33 +255,44 @@ class StoryButtonData {
     this.defaultCloseButtonColor = Colors.white,
     this.timelineBackgroundColor = const Color.fromARGB(255, 200, 200, 200),
     this.closeButton,
+    required this.onPress,
     required this.storyPages,
     required this.child,
-    required this.segmentDuration,
+    this.segmentDuration = const Duration(seconds: 5),
     this.containerBackgroundDecoration = const BoxDecoration(
       color: Color.fromARGB(255, 0, 0, 0),
     ),
     this.buttonDecoration = const BoxDecoration(
       borderRadius: BorderRadius.all(
-        Radius.circular(12.0),
+        Radius.circular(16.0),
       ),
       color: Color.fromARGB(255, 226, 226, 226),
     ),
     this.borderDecoration = const BoxDecoration(
       borderRadius: BorderRadius.all(
-        Radius.circular(15.0),
+        Radius.circular(16.0),
       ),
       border: Border.fromBorderSide(
         BorderSide(
-          color: Color.fromARGB(255, 176, 176, 176),
+          color: Color(0xFF9530BD),
+          width: 1.5,
+        ),
+      ),
+    ),
+    this.watchBorderDecoration = const BoxDecoration(
+      borderRadius: BorderRadius.all(
+        Radius.circular(16),
+      ),
+      border: Border.fromBorderSide(
+        BorderSide(
+          color: Color(0xFFD9D9D9),
           width: 1.5,
         ),
       ),
     ),
     this.borderOffset = 2.0,
   }) : assert(
-          segmentDuration.inMilliseconds % kStoryTimerTickMillis == 0 &&
-              segmentDuration.inMilliseconds >= 1000,
+          segmentDuration.inMilliseconds % kStoryTimerTickMillis == 0 && segmentDuration.inMilliseconds >= 1000,
           'Segment duration in milliseconds must be a multiple of $kStoryTimerTickMillis and not less than 1000 milliseconds',
         );
 }

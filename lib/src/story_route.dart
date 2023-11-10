@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_storyboard/src/story_button.dart';
+import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/story_page_container_builder.dart';
-
-import 'story_page_transform.dart';
 
 class StoryContainerSettings {
   final StoryButtonData buttonData;
@@ -25,8 +23,8 @@ class StoryContainerSettings {
     this.curve,
     this.pageTransform,
     required this.storyListScrollController,
-    this.safeAreaTop = true,
-    this.safeAreaBottom = true,
+    this.safeAreaTop = false,
+    this.safeAreaBottom = false,
   });
 }
 

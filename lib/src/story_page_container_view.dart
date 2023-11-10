@@ -24,8 +24,7 @@ class StoryPageContainerView extends StatefulWidget {
   State<StoryPageContainerView> createState() => _StoryPageContainerViewState();
 }
 
-class _StoryPageContainerViewState extends State<StoryPageContainerView>
-    with FirstBuildMixin {
+class _StoryPageContainerViewState extends State<StoryPageContainerView> with FirstBuildMixin {
   late StoryTimelineController _storyController;
   final Stopwatch _stopwatch = Stopwatch();
   Offset _pointerDownPosition = Offset.zero;
@@ -34,8 +33,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView>
 
   @override
   void initState() {
-    _storyController =
-        widget.buttonData.storyController ?? StoryTimelineController();
+    _storyController = widget.buttonData.storyController ?? StoryTimelineController();
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
     super.initState();
@@ -116,10 +114,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView>
   Widget _buildTimeline() {
     return Padding(
       padding: EdgeInsets.only(
-        top: widget.buttonData.timlinePadding?.top ?? 15.0,
-        left: widget.buttonData.timlinePadding?.left ?? 15.0,
-        right: widget.buttonData.timlinePadding?.left ?? 15.0,
-        bottom: widget.buttonData.timlinePadding?.bottom ?? 5.0,
+        top: widget.buttonData.timlinePadding?.top ?? 16.0,
+        left: widget.buttonData.timlinePadding?.left ?? 16.0,
+        right: widget.buttonData.timlinePadding?.left ?? 16.0,
+        bottom: widget.buttonData.timlinePadding?.bottom ?? 0.0,
       ),
       child: StoryTimeline(
         controller: _storyController,
@@ -225,8 +223,7 @@ typedef StoryTimelineCallback = Function(StoryTimelineEvent);
 class StoryTimelineController {
   _StoryTimelineState? _state;
 
-  final HashSet<StoryTimelineCallback> _listeners =
-      HashSet<StoryTimelineCallback>();
+  final HashSet<StoryTimelineCallback> _listeners = HashSet<StoryTimelineCallback>();
 
   void addListener(StoryTimelineCallback callback) {
     _listeners.add(callback);
@@ -307,8 +304,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
     );
     widget.controller._state = this;
     super.initState();
-    if (widget.buttonData.storyWatchedContract ==
-        StoryWatchedContract.onStoryStart) {
+    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryStart) {
       widget.buttonData.markAsWatched();
     }
   }
@@ -337,16 +333,14 @@ class _StoryTimelineState extends State<StoryTimeline> {
   }
 
   void _onStoryComplete() {
-    if (widget.buttonData.storyWatchedContract ==
-        StoryWatchedContract.onStoryEnd) {
+    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryEnd) {
       widget.buttonData.markAsWatched();
     }
     widget.controller._onStoryComplete();
   }
 
   void _onSegmentComplete() {
-    if (widget.buttonData.storyWatchedContract ==
-        StoryWatchedContract.onSegmentEnd) {
+    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.markAsWatched();
     }
     widget.controller._onSegmentComplete();
@@ -415,8 +409,8 @@ class _StoryTimelineState extends State<StoryTimeline> {
       width: double.infinity,
       child: CustomPaint(
         painter: _TimelinePainter(
-          fillColor: widget.buttonData.timelineFillColor,
-          backgroundColor: widget.buttonData.timelineBackgroundColor,
+          fillColor: widget.buttonData.timelineFillColor.withOpacity(0.5),
+          backgroundColor: widget.buttonData.timelineBackgroundColor.withOpacity(0.3),
           curSegmentIndex: _curSegmentIndex,
           numSegments: _numSegments,
           percent: _accumulatedTime / _maxAccumulator,

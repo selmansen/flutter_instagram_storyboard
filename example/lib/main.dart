@@ -31,7 +31,8 @@ class StoryExamplePage extends StatefulWidget {
 }
 
 class _StoryExamplePageState extends State<StoryExamplePage> {
-  static const double _borderRadius = 100.0;
+  static const double _borderRadius = 16.0;
+  static const double _childHeight = 79.0;
 
   Widget _createDummyPage({
     required String text,
@@ -109,38 +110,39 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     );
   }
 
-  Widget _buildButtonChild(String text) {
+  Widget _buildButtonChild(String? text) {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.only(top: 0.0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(
-            height: 100.0,
+            height: _childHeight,
           ),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 11.0,
+          if (text != null)
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 13,
+                height: 1,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );
   }
 
-  BoxDecoration _buildButtonDecoration(
-    String imageName,
-  ) {
+  BoxDecoration _buildButtonDecoration(String imageName) {
     return BoxDecoration(
-      borderRadius: BorderRadius.circular(_borderRadius),
+      borderRadius: BorderRadius.circular(_borderRadius - 4),
       image: DecorationImage(
-        image: AssetImage(
-          'assets/images/$imageName.png',
+        image: NetworkImage(
+          imageName,
         ),
         fit: BoxFit.cover,
       ),
@@ -175,29 +177,28 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             pageTransform: const StoryPage3DTransform(),
             buttonDatas: [
               StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration('car'),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
                 storyPages: [
                   _createDummyPage(
-                    text:
-                        'Want to buy a new car? Get our loan for the rest of your life!',
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
                     imageName: 'car',
                   ),
                   _createDummyPage(
-                    text:
-                        'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
                     imageName: 'car',
                   ),
                 ],
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
                 timelineBackgroundColor: Colors.blue,
                 buttonDecoration: _buildButtonDecoration('travel_1'),
-                borderDecoration: _buildBorderDecoration(
-                    const Color.fromARGB(255, 134, 119, 95)),
+                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
                 child: _buildButtonChild('Travel whereever'),
                 storyPages: [
                   _createDummyPage(
@@ -219,6 +220,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
                 timelineBackgroundColor: Colors.orange,
                 borderDecoration: _buildBorderDecoration(Colors.orange),
                 buttonDecoration: _buildButtonDecoration('house'),
@@ -232,28 +234,27 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 5),
               ),
               StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration('car'),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
                 storyPages: [
                   _createDummyPage(
-                    text:
-                        'Want to buy a new car? Get our loan for the rest of your life!',
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
                     imageName: 'car',
                   ),
                   _createDummyPage(
-                    text:
-                        'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
                     imageName: 'car',
                   ),
                 ],
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
                 buttonDecoration: _buildButtonDecoration('travel_1'),
-                borderDecoration: _buildBorderDecoration(
-                    const Color.fromARGB(255, 134, 119, 95)),
+                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
                 child: _buildButtonChild('Travel whereever'),
                 storyPages: [
                   _createDummyPage(
@@ -275,6 +276,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
                 isVisibleCallback: () {
                   return false;
                 },
