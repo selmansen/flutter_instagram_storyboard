@@ -44,10 +44,12 @@ class _StoryListViewState extends State<StoryListView> {
   void initState() {
     super.initState();
 
-    widget.scrollController.addListener(() {
-      if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent) {
-        setState(() {});
-      }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.scrollController.addListener(() {
+        if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent) {
+          setState(() {});
+        }
+      });
     });
   }
 
