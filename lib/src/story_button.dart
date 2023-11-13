@@ -264,13 +264,13 @@ class StoryButtonData {
     ),
     this.buttonDecoration = const BoxDecoration(
       borderRadius: BorderRadius.all(
-        Radius.circular(16.0),
+        Radius.circular(57.0),
       ),
       color: Color.fromARGB(255, 226, 226, 226),
     ),
     this.borderDecoration = const BoxDecoration(
       borderRadius: BorderRadius.all(
-        Radius.circular(16.0),
+        Radius.circular(57.0),
       ),
       border: Border.fromBorderSide(
         BorderSide(
@@ -281,7 +281,7 @@ class StoryButtonData {
     ),
     this.watchBorderDecoration = const BoxDecoration(
       borderRadius: BorderRadius.all(
-        Radius.circular(16),
+        Radius.circular(57),
       ),
       border: Border.fromBorderSide(
         BorderSide(
