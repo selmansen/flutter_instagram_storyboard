@@ -33,6 +33,7 @@ class StoryExamplePage extends StatefulWidget {
 class _StoryExamplePageState extends State<StoryExamplePage> {
   static const double _borderRadius = 16.0;
   static const double _childHeight = 79.0;
+  final _scrollController = ScrollController();
 
   Widget _createDummyPage({
     required String text,
@@ -173,6 +174,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       body: Column(
         children: [
           StoryListView(
+            scrollController: _scrollController,
             listHeight: 180.0,
             pageTransform: const StoryPage3DTransform(),
             buttonDatas: [
@@ -247,6 +249,78 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                   _createDummyPage(
                     text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
                     imageName: 'car',
+                  ),
+                ],
+                segmentDuration: const Duration(seconds: 3),
+              ),
+              StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
+                buttonDecoration: _buildButtonDecoration('travel_1'),
+                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
+                child: _buildButtonChild('Travel whereever'),
+                storyPages: [
+                  _createDummyPage(
+                    text: 'Get a loan',
+                    imageName: 'travel_1',
+                    addBottomBar: false,
+                  ),
+                  _createDummyPage(
+                    text: 'Select a place where you want to go',
+                    imageName: 'travel_2',
+                    addBottomBar: false,
+                  ),
+                  _createDummyPage(
+                    text: 'Dream about the place and pay our interest',
+                    imageName: 'travel_3',
+                    addBottomBar: false,
+                  ),
+                ],
+                segmentDuration: const Duration(seconds: 3),
+              ),
+              StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
+                buttonDecoration: _buildButtonDecoration('travel_1'),
+                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
+                child: _buildButtonChild('Travel whereever'),
+                storyPages: [
+                  _createDummyPage(
+                    text: 'Get a loan',
+                    imageName: 'travel_1',
+                    addBottomBar: false,
+                  ),
+                  _createDummyPage(
+                    text: 'Select a place where you want to go',
+                    imageName: 'travel_2',
+                    addBottomBar: false,
+                  ),
+                  _createDummyPage(
+                    text: 'Dream about the place and pay our interest',
+                    imageName: 'travel_3',
+                    addBottomBar: false,
+                  ),
+                ],
+                segmentDuration: const Duration(seconds: 3),
+              ),
+              StoryButtonData(
+                onPress: () => debugPrint('Story Opened'),
+                buttonDecoration: _buildButtonDecoration('travel_1'),
+                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
+                child: _buildButtonChild('Travel whereever'),
+                storyPages: [
+                  _createDummyPage(
+                    text: 'Get a loan',
+                    imageName: 'travel_1',
+                    addBottomBar: false,
+                  ),
+                  _createDummyPage(
+                    text: 'Select a place where you want to go',
+                    imageName: 'travel_2',
+                    addBottomBar: false,
+                  ),
+                  _createDummyPage(
+                    text: 'Dream about the place and pay our interest',
+                    imageName: 'travel_3',
+                    addBottomBar: false,
                   ),
                 ],
                 segmentDuration: const Duration(seconds: 3),

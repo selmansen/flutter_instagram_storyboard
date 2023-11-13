@@ -14,6 +14,8 @@ class StoryListView extends StatefulWidget {
   final bool safeAreaBottom;
   final double listHeight;
   final double buttonWidth;
+  final ScrollController scrollController;
+  final bool allStoryUploaded;
 
   const StoryListView({
     Key? key,
@@ -29,6 +31,8 @@ class StoryListView extends StatefulWidget {
     this.buttonWidth = 70.0,
     this.safeAreaTop = true,
     this.safeAreaBottom = true,
+    required this.scrollController,
+    this.allStoryUploaded = true,
   }) : super(key: key);
 
   @override
@@ -36,11 +40,15 @@ class StoryListView extends StatefulWidget {
 }
 
 class _StoryListViewState extends State<StoryListView> {
-  final ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
+
+    widget.scrollController.addListener(() {
+      if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent) {
+        setState(() {});
+      }
+    });
   }
 
   void _onButtonPressed(StoryButtonData buttonData) {
@@ -52,7 +60,7 @@ class _StoryListViewState extends State<StoryListView> {
           curve: buttonData.pageAnimationCurve,
           allButtonDatas: widget.buttonDatas,
           pageTransform: widget.pageTransform,
-          storyListScrollController: _scrollController,
+          storyListScrollController: widget.scrollController,
         ),
         duration: buttonData.pageAnimationDuration,
       ),
@@ -61,7 +69,7 @@ class _StoryListViewState extends State<StoryListView> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    widget.scrollController.dispose();
     super.dispose();
   }
 
@@ -81,31 +89,46 @@ class _StoryListViewState extends State<StoryListView> {
           bottom: widget.paddingBottom,
         ),
         child: ListView.builder(
-          controller: _scrollController,
+          controller: widget.scrollController,
           physics: widget.physics,
           scrollDirection: Axis.horizontal,
           itemBuilder: (c, int index) {
             final isLast = index == buttonDatas.length - 1;
             final isFirst = index == 0;
-            final buttonData = buttonDatas[index];
-            return Padding(
-              padding: EdgeInsets.only(
-                left: isFirst ? widget.paddingLeft : 0.0,
-                right: isLast ? widget.paddingRight : widget.buttonSpacing,
-              ),
-              child: SizedBox(
-                width: widget.buttonWidth,
-                child: StoryButton(
-                  buttonData: buttonData,
-                  allButtonDatas: buttonDatas,
-                  pageTransform: widget.pageTransform,
-                  storyListViewController: _scrollController,
-                  onPressed: _onButtonPressed,
+            if (index < buttonDatas.length) {
+              final buttonData = buttonDatas[index];
+
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: isFirst ? widget.paddingLeft : 0.0,
+                  right: isLast ? widget.paddingRight : widget.buttonSpacing,
                 ),
-              ),
-            );
+                child: SizedBox(
+                  width: widget.buttonWidth,
+                  child: StoryButton(
+                    buttonData: buttonData,
+                    allButtonDatas: buttonDatas,
+                    pageTransform: widget.pageTransform,
+                    storyListViewController: widget.scrollController,
+                    onPressed: _onButtonPressed,
+                  ),
+                ),
+              );
+            } else {
+              return widget.allStoryUploaded
+                  ? Padding(
+                      padding: EdgeInsets.all(16),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.transparent,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : SizedBox();
+            }
           },
-          itemCount: buttonDatas.length,
+          itemCount: buttonDatas.length + 1,
         ),
       ),
     );
