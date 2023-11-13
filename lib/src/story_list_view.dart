@@ -111,7 +111,7 @@ class _StoryListViewState extends State<StoryListView> {
               );
             } else {
               return widget.allStoryUploaded
-                  ? widget.indicator != null
+                  ? widget.indicator == null
                       ? Padding(
                           padding: EdgeInsets.all(16),
                           child: const Center(
