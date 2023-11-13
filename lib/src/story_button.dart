@@ -275,7 +275,7 @@ class StoryButtonData {
       border: Border.fromBorderSide(
         BorderSide(
           color: Color(0xFF9530BD),
-          width: 1.5,
+          width: 1,
         ),
       ),
     ),
@@ -286,11 +286,11 @@ class StoryButtonData {
       border: Border.fromBorderSide(
         BorderSide(
           color: Color(0xFFD9D9D9),
-          width: 1.5,
+          width: 1,
         ),
       ),
     ),
-    this.borderOffset = 2.0,
+    this.borderOffset = 3.0,
   }) : assert(
           segmentDuration.inMilliseconds % kStoryTimerTickMillis == 0 && segmentDuration.inMilliseconds >= 1000,
           'Segment duration in milliseconds must be a multiple of $kStoryTimerTickMillis and not less than 1000 milliseconds',

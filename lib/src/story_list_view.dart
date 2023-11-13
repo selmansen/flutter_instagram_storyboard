@@ -21,14 +21,14 @@ class StoryListView extends StatefulWidget {
     Key? key,
     required this.buttonDatas,
     this.buttonSpacing = 14,
-    this.paddingLeft = 16.0,
-    this.listHeight = 126.0,
-    this.paddingRight = 16.0,
+    this.paddingLeft = 14.0,
+    this.listHeight = 110.0,
+    this.paddingRight = 14.0,
     this.paddingTop = 0,
-    this.paddingBottom = 16.0,
+    this.paddingBottom = 0.0,
     this.physics,
     this.pageTransform,
-    this.buttonWidth = 70.0,
+    this.buttonWidth = 57.0,
     this.safeAreaTop = true,
     this.safeAreaBottom = true,
     required this.scrollController,
@@ -43,15 +43,6 @@ class _StoryListViewState extends State<StoryListView> {
   @override
   void initState() {
     super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   widget.scrollController.addListener(() {
-    //     if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && widget.allStoryUploaded) {
-    //       setState(() {});
-    //       print('state updated');
-    //     }
-    //   });
-    // });
   }
 
   void _onButtonPressed(StoryButtonData buttonData) {
@@ -83,7 +74,8 @@ class _StoryListViewState extends State<StoryListView> {
     if (buttonDatas.isEmpty) {
       return const SizedBox.shrink();
     }
-    return SizedBox(
+    return Container(
+      color: Colors.red,
       height: widget.listHeight,
       child: Padding(
         padding: EdgeInsets.only(

@@ -31,8 +31,8 @@ class StoryExamplePage extends StatefulWidget {
 }
 
 class _StoryExamplePageState extends State<StoryExamplePage> {
-  static const double _borderRadius = 16.0;
-  static const double _childHeight = 79.0;
+  static const double _borderRadius = 57.0;
+  static const double _childHeight = 57.0;
   final _scrollController = ScrollController();
 
   Widget _createDummyPage({
@@ -90,35 +90,18 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            ],
-          ),
-        ),
       ),
     );
   }
 
   Widget _buildButtonChild(String? text) {
     return Padding(
-      padding: const EdgeInsets.only(top: 0.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(
+          SizedBox(
             height: _childHeight,
           ),
           if (text != null)
@@ -140,7 +123,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
 
   BoxDecoration _buildButtonDecoration(String imageName) {
     return BoxDecoration(
-      borderRadius: BorderRadius.circular(_borderRadius - 4),
+      borderRadius: BorderRadius.circular(_borderRadius),
       image: DecorationImage(
         image: NetworkImage(
           imageName,
@@ -158,7 +141,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       border: Border.fromBorderSide(
         BorderSide(
           color: color,
-          width: 1.5,
+          width: 1,
         ),
       ),
     );
@@ -175,7 +158,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
         children: [
           StoryListView(
             scrollController: _scrollController,
-            listHeight: 180.0,
+            listHeight: 80,
             pageTransform: const StoryPage3DTransform(),
             buttonDatas: [
               StoryButtonData(
@@ -368,6 +351,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
               ),
             ],
           ),
+          Text('askldjaskljdhjaksdkajsdhkjasdjkas'),
         ],
       ),
     );
