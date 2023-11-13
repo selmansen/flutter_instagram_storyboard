@@ -24,7 +24,7 @@ class StoryListView extends StatefulWidget {
     this.paddingLeft = 16.0,
     this.listHeight = 126.0,
     this.paddingRight = 16.0,
-    this.paddingTop = 16.0,
+    this.paddingTop = 0,
     this.paddingBottom = 16.0,
     this.physics,
     this.pageTransform,
@@ -48,6 +48,7 @@ class _StoryListViewState extends State<StoryListView> {
       widget.scrollController.addListener(() {
         if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && widget.allStoryUploaded) {
           setState(() {});
+          print('state updated');
         }
       });
     });
@@ -71,7 +72,6 @@ class _StoryListViewState extends State<StoryListView> {
 
   @override
   void dispose() {
-    widget.scrollController.dispose();
     super.dispose();
   }
 
