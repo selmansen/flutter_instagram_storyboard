@@ -16,6 +16,7 @@ class StoryListView extends StatefulWidget {
   final double buttonWidth;
   final ScrollController scrollController;
   final bool allStoryUploaded;
+  final Widget? indicator;
 
   const StoryListView({
     Key? key,
@@ -33,6 +34,7 @@ class StoryListView extends StatefulWidget {
     this.safeAreaBottom = true,
     required this.scrollController,
     this.allStoryUploaded = true,
+    this.indicator,
   }) : super(key: key);
 
   @override
@@ -109,15 +111,22 @@ class _StoryListViewState extends State<StoryListView> {
               );
             } else {
               return widget.allStoryUploaded
-                  ? Padding(
-                      padding: EdgeInsets.all(16),
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.transparent,
-                          color: Colors.black,
-                        ),
-                      ),
-                    )
+                  ? widget.indicator != null
+                      ? Padding(
+                          padding: EdgeInsets.all(16),
+                          child: const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                backgroundColor: Colors.transparent,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        )
+                      : widget.indicator
                   : SizedBox();
             }
           },
