@@ -74,8 +74,7 @@ class _StoryListViewState extends State<StoryListView> {
     if (buttonDatas.isEmpty) {
       return const SizedBox.shrink();
     }
-    return Container(
-      color: Colors.red,
+    return SizedBox(
       height: widget.listHeight,
       child: Padding(
         padding: EdgeInsets.only(

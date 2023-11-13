@@ -158,7 +158,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
         children: [
           StoryListView(
             scrollController: _scrollController,
-            listHeight: 80,
+            listHeight: 96,
+            paddingTop: 16,
             pageTransform: const StoryPage3DTransform(),
             buttonDatas: [
               StoryButtonData(
@@ -351,7 +352,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
               ),
             ],
           ),
-          Text('askldjaskljdhjaksdkajsdhkjasdjkas'),
         ],
       ),
     );
