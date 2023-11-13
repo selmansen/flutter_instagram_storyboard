@@ -44,14 +44,14 @@ class _StoryListViewState extends State<StoryListView> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      widget.scrollController.addListener(() {
-        if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && widget.allStoryUploaded) {
-          setState(() {});
-          print('state updated');
-        }
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   widget.scrollController.addListener(() {
+    //     if (widget.scrollController.position.pixels == widget.scrollController.position.maxScrollExtent && widget.allStoryUploaded) {
+    //       setState(() {});
+    //       print('state updated');
+    //     }
+    //   });
+    // });
   }
 
   void _onButtonPressed(StoryButtonData buttonData) {
