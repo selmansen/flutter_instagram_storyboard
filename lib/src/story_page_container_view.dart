@@ -305,7 +305,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
     widget.controller._state = this;
     super.initState();
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryStart) {
-      widget.buttonData.markAsWatched(false);
+      widget.buttonData.markAsWatched();
     }
   }
 
@@ -334,14 +334,20 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void _onStoryComplete() {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryEnd) {
-      widget.buttonData.markAsWatched(true);
+      widget.buttonData.markAsWatched();
     }
+
+    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
+      widget.buttonData.markAsWatched();
+      widget.buttonData.allStoryWatched?.call((_curSegmentIndex + 1));
+    }
+
     widget.controller._onStoryComplete();
   }
 
   void _onSegmentComplete() {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
-      widget.buttonData.markAsWatched(false);
+      widget.buttonData.allStoryWatched?.call(_curSegmentIndex);
     }
     widget.controller._onSegmentComplete();
   }

@@ -96,9 +96,7 @@ class _StoryListViewState extends State<StoryListView> {
           itemBuilder: (c, int index) {
             final isLast = index == buttonDatas.length - 1;
             final isFirst = index == 0;
-            if (index < buttonDatas.length) {
-              final buttonData = buttonDatas[index];
-
+            if (index < buttonDatas.length + (widget.newStoryOnTap != null ? 1 : 0)) {
               if (isFirst && widget.newStoryOnTap != null) {
                 return Padding(
                   padding: EdgeInsets.only(
@@ -141,24 +139,26 @@ class _StoryListViewState extends State<StoryListView> {
                     ),
                   ),
                 );
-              }
+              } else {
+                final buttonData = buttonDatas[index - (widget.newStoryOnTap != null ? 1 : 0)];
 
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: isFirst ? widget.paddingLeft : 0,
-                  right: isLast ? widget.paddingRight : widget.buttonSpacing,
-                ),
-                child: SizedBox(
-                  width: widget.buttonWidth,
-                  child: StoryButton(
-                    buttonData: buttonData,
-                    allButtonDatas: buttonDatas,
-                    pageTransform: widget.pageTransform,
-                    storyListViewController: widget.scrollController,
-                    onPressed: _onButtonPressed,
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: isFirst ? widget.paddingLeft : 0,
+                    right: isLast ? widget.paddingRight : widget.buttonSpacing,
                   ),
-                ),
-              );
+                  child: SizedBox(
+                    width: widget.buttonWidth,
+                    child: StoryButton(
+                      buttonData: buttonData,
+                      allButtonDatas: buttonDatas,
+                      pageTransform: widget.pageTransform,
+                      storyListViewController: widget.scrollController,
+                      onPressed: _onButtonPressed,
+                    ),
+                  ),
+                );
+              }
             } else {
               return widget.allStoryUploaded
                   ? widget.indicator == null
@@ -180,7 +180,7 @@ class _StoryListViewState extends State<StoryListView> {
                   : SizedBox();
             }
           },
-          itemCount: buttonDatas.length + 1,
+          itemCount: buttonDatas.length + (widget.newStoryOnTap != null ? 2 : 1),
         ),
       ),
     );

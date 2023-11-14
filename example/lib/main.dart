@@ -178,7 +178,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             ),
             buttonDatas: [
               StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
+                allStoryWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 child: _buildButtonChild('Want a new car?'),
@@ -196,7 +196,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
+                allStoryWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.blue,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
@@ -221,138 +221,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                timelineBackgroundColor: Colors.orange,
-                borderDecoration: _buildBorderDecoration(Colors.orange),
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                child: _buildButtonChild('Buy a house anywhere'),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'You cannot buy a house. Live with it',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                  ),
-                ],
-                segmentDuration: const Duration(seconds: 5),
-              ),
-              StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                timelineBackgroundColor: Colors.red,
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                child: _buildButtonChild('Want a new car?'),
-                borderDecoration: _buildBorderDecoration(Colors.red),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                  ),
-                ],
-                segmentDuration: const Duration(seconds: 3),
-              ),
-              StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
-                child: _buildButtonChild('Travel whereever'),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Get a loan',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Select a place where you want to go',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Dream about the place and pay our interest',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                ],
-                segmentDuration: const Duration(seconds: 3),
-              ),
-              StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
-                child: _buildButtonChild('Travel whereever'),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Get a loan',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Select a place where you want to go',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Dream about the place and pay our interest',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                ],
-                segmentDuration: const Duration(seconds: 3),
-              ),
-              StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
-                child: _buildButtonChild('Travel whereever'),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Get a loan',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Select a place where you want to go',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Dream about the place and pay our interest',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                ],
-                segmentDuration: const Duration(seconds: 3),
-              ),
-              StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
-                child: _buildButtonChild('Travel whereever'),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Get a loan',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Select a place where you want to go',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Dream about the place and pay our interest',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                ],
-                segmentDuration: const Duration(seconds: 3),
-              ),
-              StoryButtonData(
-                allStoryWatched: (bool watched) => print(watched),
-                isVisibleCallback: () {
-                  return false;
-                },
+                allStoryWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.orange,
                 borderDecoration: _buildBorderDecoration(Colors.orange),
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),

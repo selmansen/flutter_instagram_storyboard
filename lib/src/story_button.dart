@@ -178,10 +178,9 @@ class StoryButtonData {
   /// after the story was watched
   /// the border will disappear
   bool _isWatched = false;
-  void markAsWatched(bool watched) {
+  void markAsWatched() {
     _isWatched = true;
     _iWatchMarkable?.markAsWatched();
-    allStoryWatched?.call(watched);
   }
 
   int currentSegmentIndex = 0;
@@ -211,7 +210,7 @@ class StoryButtonData {
   final double timelineSpacing;
   final EdgeInsets? timlinePadding;
   final IsVisibleCallback isVisibleCallback;
-  final Function(bool watched)? allStoryWatched;
+  final Function(int storyIndex)? allStoryWatched;
 
   /// Usualy this is required for the final story
   /// to pop it out to its button mosition
@@ -240,7 +239,7 @@ class StoryButtonData {
   /// if you need to hide it for some reason
   StoryButtonData({
     this.allStoryWatched,
-    this.storyWatchedContract = StoryWatchedContract.onStoryEnd,
+    this.storyWatchedContract = StoryWatchedContract.onSegmentEnd,
     this.storyController,
     this.aspectRatio = 1.0,
     this.timelineThikness = 4,
