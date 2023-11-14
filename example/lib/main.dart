@@ -161,6 +161,21 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             listHeight: 96,
             paddingTop: 16,
             pageTransform: const StoryPage3DTransform(),
+            newStoryOnTap: () => print('new story'),
+            newStoryTitle: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                'Add',
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             buttonDatas: [
               StoryButtonData(
                 onPress: () => debugPrint('Story Opened'),

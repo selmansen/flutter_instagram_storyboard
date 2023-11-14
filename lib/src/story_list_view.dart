@@ -19,6 +19,7 @@ class StoryListView extends StatefulWidget {
   final Widget? indicator;
   final String? newStoryIcom;
   final Function()? newStoryOnTap;
+  final Widget? newStoryTitle;
 
   const StoryListView({
     Key? key,
@@ -39,6 +40,7 @@ class StoryListView extends StatefulWidget {
     this.indicator,
     this.newStoryIcom,
     this.newStoryOnTap,
+    this.newStoryTitle,
   }) : super(key: key);
 
   @override
@@ -107,29 +109,34 @@ class _StoryListViewState extends State<StoryListView> {
                     alignment: Alignment.topCenter,
                     child: GestureDetector(
                       onTap: () => widget.newStoryOnTap!(),
-                      child: Container(
-                        width: widget.buttonWidth,
-                        height: widget.buttonWidth,
-                        padding: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFF641F8F),
-                              Color(0xFFA046D9),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(widget.buttonWidth),
-                        ),
-                        child: ClipOval(
-                          child: Container(
-                            color: Colors.white,
-                            child: Center(
-                              child: widget.newStoryIcom != null ? Image.asset(widget.newStoryIcom!, width: 24) : Icon(Icons.add_a_photo_outlined, size: 24),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: widget.buttonWidth,
+                            height: widget.buttonWidth,
+                            padding: const EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xFF641F8F),
+                                  Color(0xFFA046D9),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(widget.buttonWidth),
+                            ),
+                            child: ClipOval(
+                              child: Container(
+                                color: Colors.white,
+                                child: Center(
+                                  child: widget.newStoryIcom != null ? Image.asset(widget.newStoryIcom!, width: 24) : Icon(Icons.add_a_photo_outlined, size: 24),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          if (widget.newStoryTitle != null) widget.newStoryTitle!
+                        ],
                       ),
                     ),
                   ),
