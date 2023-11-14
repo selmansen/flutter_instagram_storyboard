@@ -178,7 +178,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             ),
             buttonDatas: [
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 child: _buildButtonChild('Want a new car?'),
@@ -196,7 +196,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 timelineBackgroundColor: Colors.blue,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
@@ -221,7 +221,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 timelineBackgroundColor: Colors.orange,
                 borderDecoration: _buildBorderDecoration(Colors.orange),
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
@@ -235,7 +235,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 5),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 child: _buildButtonChild('Want a new car?'),
@@ -253,7 +253,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
                 child: _buildButtonChild('Travel whereever'),
@@ -277,7 +277,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
                 child: _buildButtonChild('Travel whereever'),
@@ -301,7 +301,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
                 child: _buildButtonChild('Travel whereever'),
@@ -325,7 +325,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
                 borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
                 child: _buildButtonChild('Travel whereever'),
@@ -349,7 +349,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 3),
               ),
               StoryButtonData(
-                onPress: () => debugPrint('Story Opened'),
+                allStoryWatched: (bool watched) => print(watched),
                 isVisibleCallback: () {
                   return false;
                 },

@@ -109,11 +109,8 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
   }
 
   void _onTap() {
-    setState(() {
-      widget.buttonData.markAsWatched();
-    });
     widget.onPressed.call(widget.buttonData);
-    widget.buttonData.onPress!();
+    setState(() {});
   }
 
   @override
@@ -181,9 +178,10 @@ class StoryButtonData {
   /// after the story was watched
   /// the border will disappear
   bool _isWatched = false;
-  void markAsWatched() {
+  void markAsWatched(bool watched) {
     _isWatched = true;
     _iWatchMarkable?.markAsWatched();
+    allStoryWatched?.call(watched);
   }
 
   int currentSegmentIndex = 0;
@@ -213,7 +211,7 @@ class StoryButtonData {
   final double timelineSpacing;
   final EdgeInsets? timlinePadding;
   final IsVisibleCallback isVisibleCallback;
-  final Function()? onPress;
+  final Function(bool watched)? allStoryWatched;
 
   /// Usualy this is required for the final story
   /// to pop it out to its button mosition
@@ -241,6 +239,7 @@ class StoryButtonData {
   /// the button will not appear in button list. It might be necessary
   /// if you need to hide it for some reason
   StoryButtonData({
+    this.allStoryWatched,
     this.storyWatchedContract = StoryWatchedContract.onStoryEnd,
     this.storyController,
     this.aspectRatio = 1.0,
@@ -255,10 +254,9 @@ class StoryButtonData {
     this.defaultCloseButtonColor = Colors.white,
     this.timelineBackgroundColor = const Color.fromARGB(255, 200, 200, 200),
     this.closeButton,
-    required this.onPress,
     required this.storyPages,
     required this.child,
-    this.segmentDuration = const Duration(seconds: 5),
+    this.segmentDuration = const Duration(seconds: 10),
     this.containerBackgroundDecoration = const BoxDecoration(
       color: Color.fromARGB(255, 0, 0, 0),
     ),
