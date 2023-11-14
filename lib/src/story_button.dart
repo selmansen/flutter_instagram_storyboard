@@ -110,6 +110,7 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
 
   void _onTap() {
     widget.onPressed.call(widget.buttonData);
+    widget.buttonData.allStoryWatched?.call(widget.buttonData.currentSegmentIndex);
     setState(() {});
   }
 

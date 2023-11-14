@@ -339,7 +339,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.markAsWatched();
-      widget.buttonData.allStoryWatched?.call((_curSegmentIndex + 1));
     }
 
     widget.controller._onStoryComplete();

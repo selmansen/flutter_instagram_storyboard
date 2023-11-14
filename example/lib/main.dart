@@ -192,8 +192,24 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                     text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
                     imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
                   ),
+                  _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                  ),
+                  _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                  ),
                 ],
-                segmentDuration: const Duration(seconds: 3),
+                segmentDuration: const Duration(seconds: 10),
               ),
               StoryButtonData(
                 allStoryWatched: (int storyIndex) => print(storyIndex),
@@ -213,12 +229,20 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                     addBottomBar: false,
                   ),
                   _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                  ),
+                  _createDummyPage(
                     text: 'Dream about the place and pay our interest',
                     imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
                     addBottomBar: false,
                   ),
                 ],
-                segmentDuration: const Duration(seconds: 3),
+                segmentDuration: const Duration(seconds: 10),
               ),
               StoryButtonData(
                 allStoryWatched: (int storyIndex) => print(storyIndex),
