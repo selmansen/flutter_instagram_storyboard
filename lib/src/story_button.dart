@@ -60,7 +60,7 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
     }
     return SizedBox(
       width: _buttonWidth,
-      child: widget.buttonData._isWatched
+      child: widget.buttonData.isWatched
           ? Opacity(
               opacity: .6,
               child: widget.buttonData.child,
@@ -121,7 +121,7 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
         AspectRatio(
           aspectRatio: widget.buttonData.aspectRatio,
           child: Container(
-            decoration: widget.buttonData._isWatched ? widget.buttonData.watchBorderDecoration : widget.buttonData.borderDecoration,
+            decoration: widget.buttonData.isWatched ? widget.buttonData.watchBorderDecoration : widget.buttonData.borderDecoration,
             child: Padding(
               padding: EdgeInsets.all(
                 widget.buttonData.borderOffset,
@@ -178,13 +178,10 @@ class StoryButtonData {
   /// This affects a border around button
   /// after the story was watched
   /// the border will disappear
-  bool _isWatched = false;
   void markAsWatched() {
-    _isWatched = true;
+    isWatched = true;
     _iWatchMarkable?.markAsWatched();
   }
-
-  int currentSegmentIndex = 0;
 
   IButtonPositionable? _buttonPositionable;
   IWatchMarkable? _iWatchMarkable;
@@ -212,6 +209,8 @@ class StoryButtonData {
   final EdgeInsets? timlinePadding;
   final IsVisibleCallback isVisibleCallback;
   final Function(int storyIndex)? allStoryWatched;
+  bool isWatched;
+  int currentSegmentIndex;
 
   /// Usualy this is required for the final story
   /// to pop it out to its button mosition
@@ -239,6 +238,8 @@ class StoryButtonData {
   /// the button will not appear in button list. It might be necessary
   /// if you need to hide it for some reason
   StoryButtonData({
+    this.isWatched = false,
+    this.currentSegmentIndex = 0,
     this.allStoryWatched,
     this.storyWatchedContract = StoryWatchedContract.onSegmentEnd,
     this.storyController,

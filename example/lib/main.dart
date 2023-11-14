@@ -178,6 +178,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             ),
             buttonDatas: [
               StoryButtonData(
+                // isWatched: true,
+                // currentSegmentIndex: 2,
                 allStoryWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
@@ -212,6 +214,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 10),
               ),
               StoryButtonData(
+                // isWatched: true,
+                // currentSegmentIndex: 2,
                 allStoryWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.blue,
                 buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
@@ -245,6 +249,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: const Duration(seconds: 10),
               ),
               StoryButtonData(
+                // isWatched: true,
+                // currentSegmentIndex: 2,
                 allStoryWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.orange,
                 borderDecoration: _buildBorderDecoration(Colors.orange),
