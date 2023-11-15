@@ -139,7 +139,24 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         ),
       );
     }
-    return widget.buttonData.storyPages[_curSegmentIndex];
+    return Image.network(
+      widget.buttonData.backgroundImage[_curSegmentIndex],
+      fit: BoxFit.cover,
+      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+        if (loadingProgress == null) {
+          _storyController.unpause();
+          return widget.buttonData.storyPages[_curSegmentIndex];
+        }
+        _storyController.pause();
+        return Center(
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.black,
+            color: Colors.white,
+            value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+          ),
+        );
+      },
+    );
   }
 
   bool _isLeftPartOfStory(Offset position) {
@@ -290,12 +307,12 @@ class _StoryTimelineState extends State<StoryTimeline> {
   late Timer _timer;
   int _accumulatedTime = 0;
   int _maxAccumulator = 0;
-  bool _isPaused = false;
+  bool _isPaused = true;
   bool _isTimelineAvailable = true;
 
   @override
   void initState() {
-    _maxAccumulator = widget.buttonData.segmentDuration.inMilliseconds;
+    _maxAccumulator = widget.buttonData.segmentDuration[_curSegmentIndex].inMilliseconds;
     _timer = Timer.periodic(
       const Duration(
         milliseconds: kStoryTimerTickMillis,
@@ -321,10 +338,12 @@ class _StoryTimelineState extends State<StoryTimeline> {
       _accumulatedTime += kStoryTimerTickMillis;
       if (_accumulatedTime >= _maxAccumulator) {
         if (_isLastSegment) {
+          _maxAccumulator = widget.buttonData.segmentDuration[_curSegmentIndex].inMilliseconds;
           _onStoryComplete();
         } else {
           _accumulatedTime = 0;
           _curSegmentIndex++;
+          _maxAccumulator = widget.buttonData.segmentDuration[_curSegmentIndex].inMilliseconds;
           _onSegmentComplete();
         }
       }
@@ -346,7 +365,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void _onSegmentComplete() {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
-      widget.buttonData.allStoryWatched?.call(_curSegmentIndex);
+      widget.buttonData.isWatched?.call(_curSegmentIndex);
     }
     widget.controller._onSegmentComplete();
   }

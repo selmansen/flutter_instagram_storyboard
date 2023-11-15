@@ -60,7 +60,7 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
     }
     return SizedBox(
       width: _buttonWidth,
-      child: widget.buttonData.isWatched
+      child: widget.buttonData.allStoryWatched
           ? Opacity(
               opacity: .6,
               child: widget.buttonData.child,
@@ -110,7 +110,7 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
 
   void _onTap() {
     widget.onPressed.call(widget.buttonData);
-    widget.buttonData.allStoryWatched?.call(widget.buttonData.currentSegmentIndex);
+    widget.buttonData.isWatched?.call(widget.buttonData.currentSegmentIndex);
     setState(() {});
   }
 
@@ -121,7 +121,7 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
         AspectRatio(
           aspectRatio: widget.buttonData.aspectRatio,
           child: Container(
-            decoration: widget.buttonData.isWatched ? widget.buttonData.watchBorderDecoration : widget.buttonData.borderDecoration,
+            decoration: widget.buttonData.allStoryWatched ? widget.buttonData.watchBorderDecoration : widget.buttonData.borderDecoration,
             child: Padding(
               padding: EdgeInsets.all(
                 widget.buttonData.borderOffset,
@@ -179,7 +179,7 @@ class StoryButtonData {
   /// after the story was watched
   /// the border will disappear
   void markAsWatched() {
-    isWatched = true;
+    allStoryWatched = true;
     _iWatchMarkable?.markAsWatched();
   }
 
@@ -199,7 +199,7 @@ class StoryButtonData {
   final Widget child;
   final List<Widget> storyPages;
   final Widget? closeButton;
-  final Duration segmentDuration;
+  final List<Duration> segmentDuration;
   final BoxDecoration containerBackgroundDecoration;
   final Color timelineFillColor;
   final Color timelineBackgroundColor;
@@ -208,8 +208,9 @@ class StoryButtonData {
   final double timelineSpacing;
   final EdgeInsets? timlinePadding;
   final IsVisibleCallback isVisibleCallback;
-  final Function(int storyIndex)? allStoryWatched;
-  bool isWatched;
+  final Function(int storyIndex)? isWatched;
+  final List<String> backgroundImage;
+  bool allStoryWatched;
   int currentSegmentIndex;
 
   /// Usualy this is required for the final story
@@ -238,9 +239,10 @@ class StoryButtonData {
   /// the button will not appear in button list. It might be necessary
   /// if you need to hide it for some reason
   StoryButtonData({
-    this.isWatched = false,
+    this.allStoryWatched = false,
     this.currentSegmentIndex = 0,
-    this.allStoryWatched,
+    this.isWatched,
+    required this.backgroundImage,
     this.storyWatchedContract = StoryWatchedContract.onSegmentEnd,
     this.storyController,
     this.aspectRatio = 1.0,
@@ -257,7 +259,7 @@ class StoryButtonData {
     this.closeButton,
     required this.storyPages,
     required this.child,
-    this.segmentDuration = const Duration(seconds: 10),
+    required this.segmentDuration,
     this.containerBackgroundDecoration = const BoxDecoration(
       color: Color.fromARGB(255, 0, 0, 0),
     ),
@@ -291,7 +293,7 @@ class StoryButtonData {
     ),
     this.borderOffset = 3.0,
   }) : assert(
-          segmentDuration.inMilliseconds % kStoryTimerTickMillis == 0 && segmentDuration.inMilliseconds >= 1000,
+          segmentDuration[currentSegmentIndex].inMilliseconds % kStoryTimerTickMillis == 0 && segmentDuration[currentSegmentIndex].inMilliseconds >= 1000,
           'Segment duration in milliseconds must be a multiple of $kStoryTimerTickMillis and not less than 1000 milliseconds',
         );
 }

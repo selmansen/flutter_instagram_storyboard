@@ -34,11 +34,26 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   static const double _borderRadius = 57.0;
   static const double _childHeight = 57.0;
   final _scrollController = ScrollController();
+  final List<Duration> durations = [
+    Duration(milliseconds: 5000),
+    Duration(milliseconds: 10000),
+    Duration(milliseconds: 5000),
+    Duration(milliseconds: 3000),
+    Duration(milliseconds: 10000),
+  ];
+
+  final List<String> storyBackgroundList = [
+    'https://images.unsplash.com/photo-1622454742405-3a1be7a7b330?q=80&w=2864&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1697724111104-7305ea739f8f?q=80&w=3167&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1690646885008-5cd2f5f0c3ea?q=80&w=3164&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1685308887863-b9eaac852cc0?q=80&w=2980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1680836660226-95e12183f858?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  ];
 
   Widget _createDummyPage({
     required String text,
     required String imageName,
-    bool addBottomBar = true,
+    bool addBottomBar = false,
   }) {
     return StoryPageScaffold(
       bottomNavigationBar: addBottomBar
@@ -83,6 +98,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
+          color: Colors.black,
           image: DecorationImage(
             image: NetworkImage(
               imageName,
@@ -178,91 +194,103 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             ),
             buttonDatas: [
               StoryButtonData(
-                // isWatched: true,
+                // allStoryWatched: true,
                 // currentSegmentIndex: 2,
-                allStoryWatched: (int storyIndex) => print(storyIndex),
+                backgroundImage: storyBackgroundList,
+                isWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.red,
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
+                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
                 storyPages: [
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[0],
                   ),
                   _createDummyPage(
                     text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[1],
                   ),
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[2],
                   ),
                   _createDummyPage(
                     text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[3],
                   ),
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[4],
                   ),
                 ],
-                segmentDuration: const Duration(seconds: 10),
+                segmentDuration: durations,
               ),
               StoryButtonData(
-                // isWatched: true,
+                // allStoryWatched: true,
                 // currentSegmentIndex: 2,
-                allStoryWatched: (int storyIndex) => print(storyIndex),
-                timelineBackgroundColor: Colors.blue,
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                borderDecoration: _buildBorderDecoration(const Color.fromARGB(255, 134, 119, 95)),
-                child: _buildButtonChild('Travel whereever'),
+                backgroundImage: storyBackgroundList,
+                isWatched: (int storyIndex) => print(storyIndex),
+                timelineBackgroundColor: Colors.red,
+                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
+                child: _buildButtonChild('Want a new car?'),
+                borderDecoration: _buildBorderDecoration(Colors.red),
                 storyPages: [
                   _createDummyPage(
-                    text: 'Get a loan',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
-                    text: 'Select a place where you want to go',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
-                  ),
-                  _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[1],
                   ),
                   _createDummyPage(
                     text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    imageName: storyBackgroundList[2],
                   ),
                   _createDummyPage(
-                    text: 'Dream about the place and pay our interest',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
-                    addBottomBar: false,
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[3],
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: storyBackgroundList[4],
+                  ),
+                  _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[0],
                   ),
                 ],
-                segmentDuration: const Duration(seconds: 10),
+                segmentDuration: durations,
               ),
               StoryButtonData(
-                // isWatched: true,
+                // allStoryWatched: true,
                 // currentSegmentIndex: 2,
-                allStoryWatched: (int storyIndex) => print(storyIndex),
-                timelineBackgroundColor: Colors.orange,
-                borderDecoration: _buildBorderDecoration(Colors.orange),
-                buttonDecoration: _buildButtonDecoration('https://wallpapercave.com/wp/wp4848993.jpg'),
-                child: _buildButtonChild('Buy a house anywhere'),
+                backgroundImage: storyBackgroundList,
+                isWatched: (int storyIndex) => print(storyIndex),
+                timelineBackgroundColor: Colors.red,
+                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
+                child: _buildButtonChild('Want a new car?'),
+                borderDecoration: _buildBorderDecoration(Colors.red),
                 storyPages: [
                   _createDummyPage(
-                    text: 'You cannot buy a house. Live with it',
-                    imageName: 'https://wallpapercave.com/wp/wp4848993.jpg',
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[0],
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: storyBackgroundList[1],
+                  ),
+                  _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[2],
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: storyBackgroundList[3],
+                  ),
+                  _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[4],
                   ),
                 ],
-                segmentDuration: const Duration(seconds: 5),
+                segmentDuration: durations,
               ),
             ],
           ),
