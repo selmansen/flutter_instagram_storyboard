@@ -156,6 +156,9 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
           ),
         );
       },
+      errorBuilder: (context, error, stackTrace) {
+        return Container(child: Center(child: Icon(Icons.no_photography_outlined)));
+      },
     );
   }
 
@@ -312,6 +315,8 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   @override
   void initState() {
+    super.initState();
+
     _maxAccumulator = widget.buttonData.segmentDuration[_curSegmentIndex].inMilliseconds;
     _timer = Timer.periodic(
       const Duration(
@@ -320,7 +325,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
       _onTimer,
     );
     widget.controller._state = this;
-    super.initState();
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryStart) {
       widget.buttonData.markAsWatched();
     }
@@ -437,7 +441,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
           backgroundColor: widget.buttonData.timelineBackgroundColor.withOpacity(0.3),
           curSegmentIndex: _curSegmentIndex,
           numSegments: _numSegments,
-          percent: _accumulatedTime / _maxAccumulator,
+          percent: _accumulatedTime > kStoryTimerTickMillis ? _accumulatedTime / _maxAccumulator : 0,
           spacing: widget.buttonData.timelineSpacing,
           thikness: widget.buttonData.timelineThikness,
         ),
