@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
@@ -132,24 +131,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     return widget.buttonData.currentSegmentIndex;
   }
 
-  Future<Image> _loadBackgroundImage() async {
-    try {
-      final String imageUrl = widget.buttonData.backgroundImage[_curSegmentIndex];
-
-      HttpClientRequest request = await HttpClient().getUrl(Uri.parse(imageUrl));
-      HttpClientResponse response = await request.close();
-
-      if (response.statusCode == HttpStatus.ok) {
-        Uint8List bytes = await consolidateHttpClientResponseBytes(response);
-        return Image.memory(bytes);
-      } else {
-        throw Exception("Failed to load image. Status code: ${response.statusCode}");
-      }
-    } catch (e) {
-      throw Exception("Failed to load image. Error: $e");
-    }
-  }
-
   Widget _buildPageContent() {
     if (widget.buttonData.storyPages.isEmpty) {
       return Container(
@@ -159,35 +140,34 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         ),
       );
     }
-
-    return FutureBuilder<Image>(
-      future: _loadBackgroundImage(),
-      builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          _storyController.pause();
-          return Center(
-              child: CircularProgressIndicator(
+    return CachedNetworkImage(
+      imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
+      imageBuilder: (context, imageProvider) {
+        _storyController.unpause();
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black,
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+            ),
+          ),
+          child: widget.buttonData.storyPages[_curSegmentIndex],
+        );
+      },
+      fadeOutDuration: const Duration(milliseconds: 150),
+      fadeInDuration: const Duration(milliseconds: 150),
+      progressIndicatorBuilder: (context, url, progress) {
+        return Center(
+          child: CircularProgressIndicator(
             backgroundColor: Colors.black,
             color: Colors.white,
-          ));
-        } else if (snapshot.hasError) {
-          return Container(child: Center(child: Icon(Icons.no_photography_outlined)));
-        } else {
-          _storyController.unpause();
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                image: snapshot.data!.image,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
-            child: widget.buttonData.storyPages[_curSegmentIndex],
-          );
-        }
+            value: progress.progress,
+          ),
+        );
       },
     );
   }
