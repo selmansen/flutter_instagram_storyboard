@@ -53,60 +53,13 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   Widget _createDummyPage({
     required String text,
     required String imageName,
-    bool addBottomBar = false,
   }) {
-    return StoryPageScaffold(
-      bottomNavigationBar: addBottomBar
-          ? SizedBox(
-              width: double.infinity,
-              height: kBottomNavigationBarHeight,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 20.0,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            _borderRadius,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : const SizedBox.shrink(),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          image: DecorationImage(
-            image: NetworkImage(
-              imageName,
-            ),
-            fit: BoxFit.cover,
-          ),
+    return Stack(
+      children: [
+        Positioned(
+          child: Text(text, style: TextStyle(color: Colors.white)),
         ),
-      ),
+      ],
     );
   }
 
