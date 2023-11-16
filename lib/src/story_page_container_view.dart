@@ -132,7 +132,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     return widget.buttonData.currentSegmentIndex;
   }
 
-  Future<Image> loadImage() async {
+  Future<Image> _loadBackgroundImage() async {
     try {
       final String imageUrl = widget.buttonData.backgroundImage[_curSegmentIndex];
 
@@ -161,7 +161,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     }
 
     return FutureBuilder<Image>(
-      future: loadImage(),
+      future: _loadBackgroundImage(),
       builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           _storyController.pause();
