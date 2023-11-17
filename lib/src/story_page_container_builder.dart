@@ -187,8 +187,8 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
 
           return ClipRRect(
             clipper: _PageClipper(
-              borderRadius: widget.settings.buttonData.borderDecoration.borderRadius
-                  ?.resolve(
+              borderRadius: BorderRadius.zero
+                  .resolve(
                     null,
                   )
                   .bottomLeft,

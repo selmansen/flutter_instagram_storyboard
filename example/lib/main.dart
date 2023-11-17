@@ -155,6 +155,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
+
                 storyPages: [
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',

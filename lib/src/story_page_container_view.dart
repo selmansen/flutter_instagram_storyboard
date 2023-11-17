@@ -154,7 +154,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
             image: DecorationImage(
               image: imageProvider,
               fit: BoxFit.cover,
-              filterQuality: FilterQuality.high,
             ),
           ),
           child: widget.buttonData.storyPages[_curSegmentIndex],
@@ -193,7 +192,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         final pointerUpMillis = _stopwatch.elapsedMilliseconds;
         final maxPressMillis = kPressTimeout.inMilliseconds * 2;
         final diffMillis = pointerUpMillis - _pointerDownMillis;
-        if (diffMillis <= maxPressMillis) {
+        if (diffMillis <= maxPressMillis && event.position.dy > (MediaQuery.of(context).padding.top + 70)) {
           final position = event.position;
           final distance = (position - _pointerDownPosition).distance;
           if (distance < 5.0) {
@@ -244,19 +243,13 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height - 90,
-          child: Column(
-            children: [
-              Expanded(
-                child: SafeArea(
-                  top: true,
-                  bottom: false,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: _buildPageStructure(),
-                  ),
-                ),
-              ),
-            ],
+          child: SafeArea(
+            top: true,
+            bottom: false,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: _buildPageStructure(),
+            ),
           ),
         ),
       ),
