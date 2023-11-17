@@ -132,6 +132,8 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   }
 
   Widget _buildPageContent() {
+    _storyController.pause();
+
     if (widget.buttonData.storyPages.isEmpty) {
       return Container(
         color: Colors.orange,
@@ -238,7 +240,26 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: _buildPageStructure(),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height - 90,
+          child: Column(
+            children: [
+              Expanded(
+                child: SafeArea(
+                  top: true,
+                  bottom: false,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: _buildPageStructure(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
