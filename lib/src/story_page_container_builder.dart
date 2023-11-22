@@ -218,7 +218,6 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                         onClosePressed: _close,
                         pageController: _pageController,
                         onStoryComplete: _onStoryComplete,
-                        bottomBar: widget.settings.bottomBar,
                         bottomSafeHeight: widget.settings.bottomSafeHeight,
                       );
                       return _storyPageTransform.transform(

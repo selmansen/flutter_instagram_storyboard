@@ -68,7 +68,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     );
   }
 
-  Widget _buildMessageBar(TextEditingController controller, FocusNode focusNode) {
+  Widget _buildMessageBar(TextEditingController controller, FocusNode focusNode, bool liked) {
     return Container(
       height: _bottomSafeHeight,
       child: Column(
@@ -104,10 +104,11 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                   ],
                 ),
               ),
-              InkWell(
-                onTap: null,
-                child: Icon(Icons.ac_unit_rounded),
-              )
+              if (liked)
+                InkWell(
+                  onTap: null,
+                  child: Icon(Icons.ac_unit_rounded),
+                )
             ],
           ),
         ],
@@ -193,7 +194,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
           StoryListView(
             allStoryUploaded: false, // lazyload
             bottomSafeHeight: _bottomSafeHeight,
-            bottomBar: (controller, focusNode) => _buildMessageBar(controller, focusNode),
             scrollController: _scrollController,
             listHeight: 96,
             paddingTop: 16,
@@ -223,59 +223,29 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[0],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[1],
-                  ),
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[2],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[3],
-                  ),
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[4],
-                  ),
+                storyBottomBarList: [
+                  ...storyBackgroundList.map((e) => (controller, focusNode) => _buildMessageBar(controller, focusNode, false)),
                 ],
-                segmentDuration: durations,
-              ),
-              StoryButtonData(
-                allStoryWatched: true,
-                currentSegmentIndex: 2,
-                backgroundImage: storyBackgroundList,
-                isWatched: (int storyIndex) => print(storyIndex),
-                timelineBackgroundColor: Colors.red,
-                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
-                child: _buildButtonChild('Want a new car?'),
-                borderDecoration: _buildBorderDecoration(Colors.red),
                 storyPages: [
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[0],
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
                     imageName: storyBackgroundList[1],
                   ),
                   _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
                     imageName: storyBackgroundList[2],
                   ),
                   _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
                     imageName: storyBackgroundList[3],
                   ),
                   _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[4],
-                  ),
-                  _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[0],
+                    imageName: storyBackgroundList[4],
                   ),
                 ],
                 segmentDuration: durations,
@@ -289,6 +259,33 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
+                storyBottomBarList: [
+                  ...storyBackgroundList.map((e) => (controller, focusNode) => _buildMessageBar(controller, focusNode, true)),
+                ],
+                storyPages: [
+                  _createDummyPage(
+                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                    imageName: storyBackgroundList[1],
+                  ),
+                  _createDummyPage(
+                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
+                    imageName: storyBackgroundList[2],
+                  ),
+                ],
+                segmentDuration: durations,
+              ),
+              StoryButtonData(
+                allStoryWatched: true,
+                currentSegmentIndex: 0,
+                backgroundImage: storyBackgroundList,
+                isWatched: (int storyIndex) => print(storyIndex),
+                timelineBackgroundColor: Colors.red,
+                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
+                child: _buildButtonChild('Want a new car?'),
+                borderDecoration: _buildBorderDecoration(Colors.red),
+                storyBottomBarList: [
+                  ...storyBackgroundList.map((e) => (controller, focusNode) => _buildMessageBar(controller, focusNode, false)),
+                ],
                 storyPages: [
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',

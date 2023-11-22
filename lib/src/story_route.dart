@@ -12,7 +12,6 @@ class StoryContainerSettings {
   /// it affects the way a page transition looks
   final IStoryPageTransform? pageTransform;
   final ScrollController storyListScrollController;
-  final Function(TextEditingController controller, FocusNode focusNode)? bottomBar;
   final double bottomSafeHeight;
 
   bool safeAreaTop;
@@ -27,7 +26,6 @@ class StoryContainerSettings {
     required this.storyListScrollController,
     this.safeAreaTop = false,
     this.safeAreaBottom = false,
-    this.bottomBar,
     required this.bottomSafeHeight,
   });
 }

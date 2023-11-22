@@ -198,7 +198,7 @@ class StoryButtonData {
   final InteractiveInkFeatureFactory? inkFeatureFactory;
   final Widget child;
   final List<Widget> storyPages;
-  final Widget? bottomBar;
+  final List<Function(TextEditingController controller, FocusNode focusNode)>? storyBottomBarList;
   final Widget? closeButton;
   final List<Duration> segmentDuration;
   final BoxDecoration containerBackgroundDecoration;
@@ -240,7 +240,6 @@ class StoryButtonData {
   /// the button will not appear in button list. It might be necessary
   /// if you need to hide it for some reason
   StoryButtonData({
-    this.bottomBar,
     this.allStoryWatched = false,
     this.currentSegmentIndex = 0,
     this.isWatched,
@@ -260,6 +259,7 @@ class StoryButtonData {
     this.timelineBackgroundColor = const Color.fromARGB(255, 200, 200, 200),
     this.closeButton,
     required this.storyPages,
+    required this.storyBottomBarList,
     required this.child,
     required this.segmentDuration,
     this.containerBackgroundDecoration = const BoxDecoration(

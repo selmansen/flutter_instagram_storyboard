@@ -12,7 +12,6 @@ class StoryPageContainerView extends StatefulWidget {
   final VoidCallback onStoryComplete;
   final PageController? pageController;
   final VoidCallback? onClosePressed;
-  final Function(TextEditingController controller, FocusNode focusNode)? bottomBar;
   final double bottomSafeHeight;
 
   const StoryPageContainerView({
@@ -21,7 +20,6 @@ class StoryPageContainerView extends StatefulWidget {
     required this.onStoryComplete,
     this.pageController,
     this.onClosePressed,
-    this.bottomBar,
     required this.bottomSafeHeight,
   }) : super(key: key);
 
@@ -35,7 +33,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Offset _pointerDownPosition = Offset.zero;
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
-  final _controller = TextEditingController();
   final _focusNode = FocusNode();
 
   @override
@@ -128,12 +125,8 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   }
 
   Widget _bottomBar() {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: widget.bottomBar != null ? widget.bottomBar!(_controller, _focusNode) : SizedBox(height: widget.bottomSafeHeight),
-    );
+    final _controller = TextEditingController();
+    return Positioned(left: 0, right: 0, bottom: 0, child: widget.buttonData.storyBottomBarList != null ? widget.buttonData.storyBottomBarList![_curSegmentIndex].call(_controller, _focusNode) : SizedBox(height: widget.bottomSafeHeight));
   }
 
   Widget _buildTimeline() {
