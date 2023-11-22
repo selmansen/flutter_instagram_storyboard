@@ -34,6 +34,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
   final _focusNode = FocusNode();
+  final _controller = TextEditingController();
 
   @override
   void initState() {
@@ -48,7 +49,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         _storyController.keyboardClosed();
       }
     });
-
     super.initState();
   }
 
@@ -125,7 +125,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   }
 
   Widget _bottomBar() {
-    final _controller = TextEditingController();
     return Positioned(left: 0, right: 0, bottom: 0, child: widget.buttonData.storyBottomBarList != null ? widget.buttonData.storyBottomBarList![_curSegmentIndex].call(_controller, _focusNode) : SizedBox(height: widget.bottomSafeHeight));
   }
 
@@ -140,6 +139,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       child: StoryTimeline(
         controller: _storyController,
         buttonData: widget.buttonData,
+        textEditingController: _controller,
       ),
     );
   }
@@ -349,11 +349,13 @@ class StoryTimelineController {
 class StoryTimeline extends StatefulWidget {
   final StoryTimelineController controller;
   final StoryButtonData buttonData;
+  final TextEditingController textEditingController;
 
   const StoryTimeline({
     Key? key,
     required this.controller,
     required this.buttonData,
+    required this.textEditingController,
   }) : super(key: key);
 
   @override
@@ -418,7 +420,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.markAsWatched();
     }
-
+    widget.textEditingController.text = "";
     widget.controller._onStoryComplete();
   }
 
@@ -426,6 +428,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.isWatched?.call(_curSegmentIndex);
     }
+    widget.textEditingController.text = "";
     widget.controller._onSegmentComplete();
   }
 

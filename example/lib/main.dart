@@ -82,6 +82,9 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                     TextField(
                       focusNode: focusNode,
                       controller: controller,
+                      onChanged: (value) {
+                        controller.text = value;
+                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
