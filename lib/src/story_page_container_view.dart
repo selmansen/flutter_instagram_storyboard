@@ -12,6 +12,8 @@ class StoryPageContainerView extends StatefulWidget {
   final VoidCallback onStoryComplete;
   final PageController? pageController;
   final VoidCallback? onClosePressed;
+  final Function(TextEditingController controller, FocusNode focusNode)? bottomBar;
+  final double bottomSafeHeight;
 
   const StoryPageContainerView({
     Key? key,
@@ -19,6 +21,8 @@ class StoryPageContainerView extends StatefulWidget {
     required this.onStoryComplete,
     this.pageController,
     this.onClosePressed,
+    this.bottomBar,
+    required this.bottomSafeHeight,
   }) : super(key: key);
 
   @override
@@ -31,12 +35,23 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Offset _pointerDownPosition = Offset.zero;
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode();
 
   @override
   void initState() {
     _storyController = widget.buttonData.storyController ?? StoryTimelineController();
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
+
+    _focusNode.addListener(() async {
+      if (_focusNode.hasFocus) {
+        _storyController.keyboardOpened();
+      } else {
+        _storyController.keyboardClosed();
+      }
+    });
+
     super.initState();
   }
 
@@ -112,6 +127,15 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     );
   }
 
+  Widget _bottomBar() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: widget.bottomBar != null ? widget.bottomBar!(_controller, _focusNode) : SizedBox(height: widget.bottomSafeHeight),
+    );
+  }
+
   Widget _buildTimeline() {
     return Padding(
       padding: EdgeInsets.only(
@@ -134,42 +158,50 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Widget _buildPageContent() {
     _storyController.pause();
 
-    if (widget.buttonData.storyPages.isEmpty) {
-      return Container(
-        color: Colors.orange,
-        child: const Center(
-          child: Text('No pages'),
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - MediaQuery.of(context).viewPadding.top - widget.bottomSafeHeight,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.black,
         ),
-      );
-    }
-    return CachedNetworkImage(
-      imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
-      imageBuilder: (context, imageProvider) {
-        _storyController.unpause();
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: CachedNetworkImage(
+            imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
+            imageBuilder: (context, imageProvider) {
+              _storyController.unpause();
+
+              return Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+                  widget.buttonData.storyPages[_curSegmentIndex],
+                ],
+              );
+            },
+            fadeOutDuration: const Duration(milliseconds: 150),
+            fadeInDuration: const Duration(milliseconds: 150),
+            progressIndicatorBuilder: (context, url, progress) {
+              return Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.black,
+                  color: Colors.white,
+                  value: progress.progress,
+                ),
+              );
+            },
           ),
-          child: widget.buttonData.storyPages[_curSegmentIndex],
-        );
-      },
-      fadeOutDuration: const Duration(milliseconds: 150),
-      fadeInDuration: const Duration(milliseconds: 150),
-      progressIndicatorBuilder: (context, url, progress) {
-        return Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.black,
-            color: Colors.white,
-            value: progress.progress,
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -182,48 +214,54 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   }
 
   Widget _buildPageStructure() {
-    return Listener(
-      onPointerDown: (PointerDownEvent event) {
-        _pointerDownMillis = _stopwatch.elapsedMilliseconds;
-        _pointerDownPosition = event.position;
-        _storyController.pause();
-      },
-      onPointerUp: (PointerUpEvent event) {
-        final pointerUpMillis = _stopwatch.elapsedMilliseconds;
-        final maxPressMillis = kPressTimeout.inMilliseconds * 2;
-        final diffMillis = pointerUpMillis - _pointerDownMillis;
-        if (diffMillis <= maxPressMillis && event.position.dy > (MediaQuery.of(context).padding.top + 70)) {
-          final position = event.position;
-          final distance = (position - _pointerDownPosition).distance;
-          if (distance < 5.0) {
-            final isLeft = _isLeftPartOfStory(position);
-            if (isLeft) {
-              _storyController.previousSegment();
-            } else {
-              _storyController.nextSegment();
-            }
-          }
-        }
-        _storyController.unpause();
-      },
-      child: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: Stack(
-          children: [
-            _buildPageContent(),
-            SafeArea(
-              child: Column(
+    return Column(
+      children: [
+        Expanded(
+          child: Stack(
+            children: [
+              Listener(
+                onPointerDown: (PointerDownEvent event) {
+                  _pointerDownMillis = _stopwatch.elapsedMilliseconds;
+                  _pointerDownPosition = event.position;
+                  _storyController.pause();
+                },
+                onPointerUp: (PointerUpEvent event) {
+                  final pointerUpMillis = _stopwatch.elapsedMilliseconds;
+                  final maxPressMillis = kPressTimeout.inMilliseconds * 2;
+                  final diffMillis = pointerUpMillis - _pointerDownMillis;
+                  if (diffMillis <= maxPressMillis && event.position.dy > (MediaQuery.of(context).padding.top + 70)) {
+                    final position = event.position;
+                    final distance = (position - _pointerDownPosition).distance;
+                    if (distance < 5.0) {
+                      final isLeft = _isLeftPartOfStory(position);
+                      if (_focusNode.hasFocus) {
+                        _storyController.keyboardClosed();
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      } else {
+                        if (isLeft) {
+                          _storyController.previousSegment();
+                        } else {
+                          _storyController.nextSegment();
+                        }
+                      }
+                    }
+                  }
+                  _storyController.unpause();
+                },
+                child: _buildPageContent(),
+              ),
+              Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildTimeline(),
                   _buildCloseButton(),
                 ],
               ),
-            ),
-          ],
+              _bottomBar(),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -239,19 +277,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height - 90,
-          child: SafeArea(
-            top: true,
-            bottom: false,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: _buildPageStructure(),
-            ),
-          ),
-        ),
+      body: SafeArea(
+        top: true,
+        bottom: false,
+        child: _buildPageStructure(),
       ),
     );
   }
@@ -303,6 +332,14 @@ class StoryTimelineController {
     _state?.pause();
   }
 
+  void keyboardOpened() {
+    _state?.keyboardOpened();
+  }
+
+  void keyboardClosed() {
+    _state?.keyboardClosed();
+  }
+
   void _setTimelineAvailable(bool value) {
     _state?._setTimelineAvailable(value);
   }
@@ -335,6 +372,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
   int _accumulatedTime = 0;
   int _maxAccumulator = 0;
   bool _isPaused = true;
+  bool _isKeyboardOpened = false;
   bool _isTimelineAvailable = true;
 
   @override
@@ -359,7 +397,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
   }
 
   void _onTimer(timer) {
-    if (_isPaused || !_isTimelineAvailable) {
+    if (_isPaused || !_isTimelineAvailable || _isKeyboardOpened) {
       return;
     }
     if (_accumulatedTime + kStoryTimerTickMillis <= _maxAccumulator) {
@@ -420,23 +458,31 @@ class _StoryTimelineState extends State<StoryTimeline> {
   }
 
   void nextSegment() {
-    if (_isLastSegment) {
-      _accumulatedTime = _maxAccumulator;
-      _onStoryComplete();
+    if (_isKeyboardOpened) {
+      FocusManager.instance.primaryFocus?.unfocus();
     } else {
-      _accumulatedTime = 0;
-      _curSegmentIndex++;
-      _onSegmentComplete();
+      if (_isLastSegment) {
+        _accumulatedTime = _maxAccumulator;
+        _onStoryComplete();
+      } else {
+        _accumulatedTime = 0;
+        _curSegmentIndex++;
+        _onSegmentComplete();
+      }
     }
   }
 
   void previousSegment() {
-    if (_accumulatedTime == _maxAccumulator) {
-      _accumulatedTime = 0;
+    if (_isKeyboardOpened) {
+      FocusManager.instance.primaryFocus?.unfocus();
     } else {
-      _accumulatedTime = 0;
-      _curSegmentIndex--;
-      _onSegmentComplete();
+      if (_accumulatedTime == _maxAccumulator) {
+        _accumulatedTime = 0;
+      } else {
+        _accumulatedTime = 0;
+        _curSegmentIndex--;
+        _onSegmentComplete();
+      }
     }
   }
 
@@ -446,6 +492,14 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void unpause() {
     _isPaused = false;
+  }
+
+  void keyboardOpened() {
+    _isKeyboardOpened = true;
+  }
+
+  void keyboardClosed() {
+    _isKeyboardOpened = false;
   }
 
   @override

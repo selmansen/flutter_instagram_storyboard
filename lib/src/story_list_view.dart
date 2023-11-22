@@ -20,6 +20,8 @@ class StoryListView extends StatefulWidget {
   final String? newStoryIcom;
   final Function()? newStoryOnTap;
   final Widget? newStoryTitle;
+  final Function(TextEditingController controller, FocusNode focusNode)? bottomBar;
+  final double bottomSafeHeight;
 
   const StoryListView({
     Key? key,
@@ -41,6 +43,8 @@ class StoryListView extends StatefulWidget {
     this.newStoryIcom,
     this.newStoryOnTap,
     this.newStoryTitle,
+    this.bottomBar,
+    required this.bottomSafeHeight,
   }) : super(key: key);
 
   @override
@@ -63,6 +67,8 @@ class _StoryListViewState extends State<StoryListView> {
           allButtonDatas: widget.buttonDatas,
           pageTransform: widget.pageTransform,
           storyListScrollController: widget.scrollController,
+          bottomBar: widget.bottomBar,
+          bottomSafeHeight: widget.bottomSafeHeight,
         ),
         duration: buttonData.pageAnimationDuration,
       ),

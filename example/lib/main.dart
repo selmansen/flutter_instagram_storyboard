@@ -33,6 +33,7 @@ class StoryExamplePage extends StatefulWidget {
 class _StoryExamplePageState extends State<StoryExamplePage> {
   static const double _borderRadius = 57.0;
   static const double _childHeight = 57.0;
+  static const double _bottomSafeHeight = 90;
   final _scrollController = ScrollController();
   final List<Duration> durations = [
     Duration(milliseconds: 5000),
@@ -54,12 +55,76 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     required String text,
     required String imageName,
   }) {
-    return Stack(
-      children: [
-        Positioned(
-          child: Text(text, style: TextStyle(color: Colors.white)),
-        ),
-      ],
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        children: [
+          Positioned(
+            child: Text(text, style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageBar(TextEditingController controller, FocusNode focusNode) {
+    return Container(
+      height: _bottomSafeHeight,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Stack(
+                  alignment: Alignment.centerRight,
+                  children: [
+                    TextField(
+                      focusNode: focusNode,
+                      controller: controller,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 1,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.white,
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: Text('Send', style: TextStyle(color: Colors.white)),
+                    )
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: null,
+                child: Icon(Icons.ac_unit_rounded),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _myStoryStatusBar() {
+    return Container(
+      height: _bottomSafeHeight,
+      child: Column(
+        children: [
+          Row(
+            children: [Text('viewers', style: TextStyle(color: Colors.white))],
+          ),
+        ],
+      ),
     );
   }
 
@@ -126,6 +191,9 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       body: Column(
         children: [
           StoryListView(
+            allStoryUploaded: false, // lazyload
+            bottomSafeHeight: _bottomSafeHeight,
+            bottomBar: (controller, focusNode) => _buildMessageBar(controller, focusNode),
             scrollController: _scrollController,
             listHeight: 96,
             paddingTop: 16,
@@ -147,15 +215,14 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             ),
             buttonDatas: [
               StoryButtonData(
-                // allStoryWatched: true,
-                // currentSegmentIndex: 2,
+                allStoryWatched: false,
+                currentSegmentIndex: 0,
                 backgroundImage: storyBackgroundList,
                 isWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.red,
                 buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
                 child: _buildButtonChild('Want a new car?'),
                 borderDecoration: _buildBorderDecoration(Colors.red),
-
                 storyPages: [
                   _createDummyPage(
                     text: 'Want to buy a new car? Get our loan for the rest of your life!',
@@ -181,8 +248,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: durations,
               ),
               StoryButtonData(
-                // allStoryWatched: true,
-                // currentSegmentIndex: 2,
+                allStoryWatched: true,
+                currentSegmentIndex: 2,
                 backgroundImage: storyBackgroundList,
                 isWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.red,
@@ -214,8 +281,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 segmentDuration: durations,
               ),
               StoryButtonData(
-                // allStoryWatched: true,
-                // currentSegmentIndex: 2,
+                allStoryWatched: true,
+                currentSegmentIndex: 0,
                 backgroundImage: storyBackgroundList,
                 isWatched: (int storyIndex) => print(storyIndex),
                 timelineBackgroundColor: Colors.red,

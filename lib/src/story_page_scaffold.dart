@@ -24,6 +24,7 @@ class StoryPageScaffold extends StatelessWidget {
     return Scaffold(
       appBar: appBar,
       body: Stack(
+        clipBehavior: Clip.none,
         children: [
           body,
           IgnorePointer(
