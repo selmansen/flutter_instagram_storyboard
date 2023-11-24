@@ -102,7 +102,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             ...storyBackgroundList.map((e) => _createDummyPage(
                   text: 'Want to buy a new car? Get our loan for the rest of your life!',
                   imageName: storyBackgroundList[i],
-                  activeIndex: i,
                 )),
           ],
           bottomBar: [...storyBackgroundList.map((e) => _buildMessageBar(activeIndex: i))],
@@ -117,7 +116,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   Widget _createDummyPage({
     required String text,
     required String imageName,
-    required int activeIndex,
   }) {
     return SizedBox(
       width: double.infinity,
@@ -142,7 +140,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
         storyTimelineController[activeIndex].keyboardOpened();
       } else {
         storyTimelineController[activeIndex].keyboardClosed();
-        storyTimelineController[activeIndex].pause();
       }
     });
 
@@ -159,9 +156,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                     TextField(
                       focusNode: focusNode,
                       controller: controller,
-                      onChanged: (value) {
-                        controller.text = value;
-                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
