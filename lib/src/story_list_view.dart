@@ -20,6 +20,7 @@ class StoryListView extends StatefulWidget {
   final String? newStoryIcom;
   final Function()? newStoryOnTap;
   final Widget? newStoryTitle;
+  final Widget? bottomBar;
   final double bottomSafeHeight;
 
   const StoryListView({
@@ -42,6 +43,7 @@ class StoryListView extends StatefulWidget {
     this.newStoryIcom,
     this.newStoryOnTap,
     this.newStoryTitle,
+    this.bottomBar,
     required this.bottomSafeHeight,
   }) : super(key: key);
 

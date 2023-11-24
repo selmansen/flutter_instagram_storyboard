@@ -13,6 +13,7 @@ class StoryPageContainerView extends StatefulWidget {
   final PageController? pageController;
   final VoidCallback? onClosePressed;
   final double bottomSafeHeight;
+  final StoryTimelineController? storyTimelineController;
 
   const StoryPageContainerView({
     Key? key,
@@ -21,6 +22,7 @@ class StoryPageContainerView extends StatefulWidget {
     this.pageController,
     this.onClosePressed,
     required this.bottomSafeHeight,
+    required this.storyTimelineController,
   }) : super(key: key);
 
   @override
@@ -33,8 +35,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Offset _pointerDownPosition = Offset.zero;
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
-  final _focusNode = FocusNode();
-  final _controller = TextEditingController();
 
   @override
   void initState() {
@@ -42,13 +42,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
 
-    _focusNode.addListener(() async {
-      if (_focusNode.hasFocus) {
-        _storyController.keyboardOpened();
-      } else {
-        _storyController.keyboardClosed();
-      }
-    });
     super.initState();
   }
 
@@ -124,10 +117,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     );
   }
 
-  Widget _bottomBar() {
-    return Positioned(left: 0, right: 0, bottom: 0, child: widget.buttonData.storyBottomBarList != null ? widget.buttonData.storyBottomBarList![_curSegmentIndex].call(_controller, _focusNode) : SizedBox(height: widget.bottomSafeHeight));
-  }
-
   Widget _buildTimeline() {
     return Padding(
       padding: EdgeInsets.only(
@@ -139,7 +128,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       child: StoryTimeline(
         controller: _storyController,
         buttonData: widget.buttonData,
-        textEditingController: _controller,
       ),
     );
   }
@@ -198,6 +186,15 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     );
   }
 
+  Widget _bottomBar() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: (widget.buttonData.bottomBar != null && widget.buttonData.bottomBar!.isNotEmpty) ? widget.buttonData.bottomBar![_curSegmentIndex] : SizedBox(height: widget.bottomSafeHeight),
+    );
+  }
+
   bool _isLeftPartOfStory(Offset position) {
     if (!mounted) {
       return false;
@@ -227,15 +224,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     final distance = (position - _pointerDownPosition).distance;
                     if (distance < 5.0) {
                       final isLeft = _isLeftPartOfStory(position);
-                      if (_focusNode.hasFocus) {
-                        _storyController.keyboardClosed();
-                        FocusManager.instance.primaryFocus?.unfocus();
+                      if (isLeft) {
+                        _storyController.previousSegment();
                       } else {
-                        if (isLeft) {
-                          _storyController.previousSegment();
-                        } else {
-                          _storyController.nextSegment();
-                        }
+                        _storyController.nextSegment();
                       }
                     }
                   }
@@ -349,13 +341,11 @@ class StoryTimelineController {
 class StoryTimeline extends StatefulWidget {
   final StoryTimelineController controller;
   final StoryButtonData buttonData;
-  final TextEditingController textEditingController;
 
   const StoryTimeline({
     Key? key,
     required this.controller,
     required this.buttonData,
-    required this.textEditingController,
   }) : super(key: key);
 
   @override
@@ -420,7 +410,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.markAsWatched();
     }
-    widget.textEditingController.text = "";
     widget.controller._onStoryComplete();
   }
 
@@ -428,7 +417,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.isWatched?.call(_curSegmentIndex);
     }
-    widget.textEditingController.text = "";
     widget.controller._onSegmentComplete();
   }
 

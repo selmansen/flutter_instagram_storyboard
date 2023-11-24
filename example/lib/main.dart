@@ -8,7 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,13 +34,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   static const double _childHeight = 57.0;
   static const double _bottomSafeHeight = 90;
   final _scrollController = ScrollController();
-  final List<Duration> durations = [
-    Duration(milliseconds: 5000),
-    Duration(milliseconds: 10000),
-    Duration(milliseconds: 5000),
-    Duration(milliseconds: 3000),
-    Duration(milliseconds: 10000),
-  ];
+  List<StoryTimelineController> storyTimelineController = [];
+  List<Duration> durations = [];
 
   final List<String> storyBackgroundList = [
     'https://images.unsplash.com/photo-1622454742405-3a1be7a7b330?q=80&w=2864&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -51,24 +45,107 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     'https://images.unsplash.com/photo-1680836660226-95e12183f858?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   ];
 
-  Widget _createDummyPage({
-    required String text,
-    required String imageName,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        title: const Text('Story Example'),
+      ),
+      body: Column(
         children: [
-          Positioned(
-            child: Text(text, style: TextStyle(color: Colors.white)),
+          StoryListView(
+            allStoryUploaded: false, // lazyload
+            bottomSafeHeight: _bottomSafeHeight,
+            scrollController: _scrollController,
+            listHeight: 100,
+            paddingTop: 16,
+            pageTransform: const StoryPage3DTransform(),
+            newStoryOnTap: () => print('new story'),
+            newStoryTitle: Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                'Add',
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            buttonDatas: [..._generateStoryButtonDataList(storyBackgroundList.length)],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMessageBar(TextEditingController controller, FocusNode focusNode, bool liked) {
+  List<StoryButtonData> _generateStoryButtonDataList(int n) {
+    List<StoryButtonData> storyButtonDataList = [];
+
+    for (int i = 0; i < n; i++) {
+      storyTimelineController.add(StoryTimelineController());
+      durations.add(Duration(milliseconds: 5000));
+      storyButtonDataList.add(
+        StoryButtonData(
+          storyController: storyTimelineController[i],
+          allStoryWatched: i > 0,
+          currentSegmentIndex: 0,
+          backgroundImage: storyBackgroundList,
+          isWatched: (int storyIndex) => print(storyIndex),
+          buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
+          child: _buildButtonChild('user $i'),
+          storyPages: [
+            ...storyBackgroundList.map((e) => _createDummyPage(
+                  text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                  imageName: storyBackgroundList[i],
+                  activeIndex: i,
+                )),
+          ],
+          bottomBar: [...storyBackgroundList.map((e) => _buildMessageBar(activeIndex: i))],
+          segmentDuration: durations,
+        ),
+      );
+    }
+
+    return storyButtonDataList;
+  }
+
+  Widget _createDummyPage({
+    required String text,
+    required String imageName,
+    required int activeIndex,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            child: Text(text, style: TextStyle(color: Colors.white), textAlign: TextAlign.center),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageBar({required int activeIndex}) {
+    final controller = TextEditingController();
+    final focusNode = FocusNode();
+
+    focusNode.addListener(() async {
+      if (focusNode.hasFocus) {
+        storyTimelineController[activeIndex].keyboardOpened();
+      } else {
+        storyTimelineController[activeIndex].keyboardClosed();
+        storyTimelineController[activeIndex].pause();
+      }
+    });
+
     return Container(
       height: _bottomSafeHeight,
       child: Column(
@@ -107,25 +184,16 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                   ],
                 ),
               ),
-              if (liked)
-                InkWell(
-                  onTap: null,
-                  child: Icon(Icons.ac_unit_rounded),
-                )
+              InkWell(
+                onTap: () {
+                  storyTimelineController[activeIndex].pause();
+                },
+                child: Icon(
+                  Icons.ac_unit_rounded,
+                  color: Colors.white,
+                ),
+              )
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _myStoryStatusBar() {
-    return Container(
-      height: _bottomSafeHeight,
-      child: Column(
-        children: [
-          Row(
-            children: [Text('viewers', style: TextStyle(color: Colors.white))],
           ),
         ],
       ),
@@ -167,155 +235,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
           imageName,
         ),
         fit: BoxFit.cover,
-      ),
-    );
-  }
-
-  BoxDecoration _buildBorderDecoration(Color color) {
-    return BoxDecoration(
-      borderRadius: const BorderRadius.all(
-        Radius.circular(_borderRadius),
-      ),
-      border: Border.fromBorderSide(
-        BorderSide(
-          color: color,
-          width: 1,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        title: const Text('Story Example'),
-      ),
-      body: Column(
-        children: [
-          StoryListView(
-            allStoryUploaded: false, // lazyload
-            bottomSafeHeight: _bottomSafeHeight,
-            scrollController: _scrollController,
-            listHeight: 96,
-            paddingTop: 16,
-            pageTransform: const StoryPage3DTransform(),
-            newStoryOnTap: () => print('new story'),
-            newStoryTitle: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                'Add',
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 1,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            buttonDatas: [
-              StoryButtonData(
-                allStoryWatched: false,
-                currentSegmentIndex: 0,
-                backgroundImage: storyBackgroundList,
-                isWatched: (int storyIndex) => print(storyIndex),
-                timelineBackgroundColor: Colors.red,
-                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
-                child: _buildButtonChild('Want a new car?'),
-                borderDecoration: _buildBorderDecoration(Colors.red),
-                storyBottomBarList: [
-                  ...storyBackgroundList.map((e) => (controller, focusNode) => _buildMessageBar(controller, focusNode, false)),
-                ],
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[0],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[1],
-                  ),
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[2],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[3],
-                  ),
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[4],
-                  ),
-                ],
-                segmentDuration: durations,
-              ),
-              StoryButtonData(
-                allStoryWatched: true,
-                currentSegmentIndex: 0,
-                backgroundImage: storyBackgroundList,
-                isWatched: (int storyIndex) => print(storyIndex),
-                timelineBackgroundColor: Colors.red,
-                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
-                child: _buildButtonChild('Want a new car?'),
-                borderDecoration: _buildBorderDecoration(Colors.red),
-                storyBottomBarList: [
-                  ...storyBackgroundList.map((e) => (controller, focusNode) => _buildMessageBar(controller, focusNode, true)),
-                ],
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[1],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[2],
-                  ),
-                ],
-                segmentDuration: durations,
-              ),
-              StoryButtonData(
-                allStoryWatched: true,
-                currentSegmentIndex: 0,
-                backgroundImage: storyBackgroundList,
-                isWatched: (int storyIndex) => print(storyIndex),
-                timelineBackgroundColor: Colors.red,
-                buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
-                child: _buildButtonChild('Want a new car?'),
-                borderDecoration: _buildBorderDecoration(Colors.red),
-                storyBottomBarList: [
-                  ...storyBackgroundList.map((e) => (controller, focusNode) => _buildMessageBar(controller, focusNode, false)),
-                ],
-                storyPages: [
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[0],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[1],
-                  ),
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[2],
-                  ),
-                  _createDummyPage(
-                    text: 'Can\'t return the loan? Don\'t worry, we\'ll take your soul as a collateral ;-)',
-                    imageName: storyBackgroundList[3],
-                  ),
-                  _createDummyPage(
-                    text: 'Want to buy a new car? Get our loan for the rest of your life!',
-                    imageName: storyBackgroundList[4],
-                  ),
-                ],
-                segmentDuration: durations,
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

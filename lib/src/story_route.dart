@@ -13,11 +13,13 @@ class StoryContainerSettings {
   final IStoryPageTransform? pageTransform;
   final ScrollController storyListScrollController;
   final double bottomSafeHeight;
+  final StoryTimelineController? storyTimelineController;
 
   bool safeAreaTop;
   bool safeAreaBottom;
 
   StoryContainerSettings({
+    required this.bottomSafeHeight,
     required this.buttonData,
     required this.allButtonDatas,
     required this.tapPosition,
@@ -26,7 +28,7 @@ class StoryContainerSettings {
     required this.storyListScrollController,
     this.safeAreaTop = false,
     this.safeAreaBottom = false,
-    required this.bottomSafeHeight,
+    this.storyTimelineController,
   });
 }
 

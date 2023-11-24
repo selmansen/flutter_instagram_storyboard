@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
 import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
-import 'package:flutter_instagram_storyboard/src/story_page_container_view.dart';
 
 class StoryPageContainerBuilder extends StatefulWidget {
   final Animation<double> animation;
@@ -219,6 +218,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                         pageController: _pageController,
                         onStoryComplete: _onStoryComplete,
                         bottomSafeHeight: widget.settings.bottomSafeHeight,
+                        storyTimelineController: widget.settings.storyTimelineController,
                       );
                       return _storyPageTransform.transform(
                         context,

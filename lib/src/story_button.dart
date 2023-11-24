@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
 import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
-import 'package:flutter_instagram_storyboard/src/story_page_container_view.dart';
 
 class StoryButton extends StatefulWidget {
   final StoryButtonData buttonData;
@@ -198,7 +197,7 @@ class StoryButtonData {
   final InteractiveInkFeatureFactory? inkFeatureFactory;
   final Widget child;
   final List<Widget> storyPages;
-  final List<Function(TextEditingController controller, FocusNode focusNode)>? storyBottomBarList;
+  final List<Widget>? bottomBar;
   final Widget? closeButton;
   final List<Duration> segmentDuration;
   final BoxDecoration containerBackgroundDecoration;
@@ -240,6 +239,7 @@ class StoryButtonData {
   /// the button will not appear in button list. It might be necessary
   /// if you need to hide it for some reason
   StoryButtonData({
+    this.bottomBar,
     this.allStoryWatched = false,
     this.currentSegmentIndex = 0,
     this.isWatched,
@@ -259,7 +259,6 @@ class StoryButtonData {
     this.timelineBackgroundColor = const Color.fromARGB(255, 200, 200, 200),
     this.closeButton,
     required this.storyPages,
-    required this.storyBottomBarList,
     required this.child,
     required this.segmentDuration,
     this.containerBackgroundDecoration = const BoxDecoration(
