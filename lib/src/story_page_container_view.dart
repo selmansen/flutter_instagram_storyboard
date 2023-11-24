@@ -317,6 +317,10 @@ class StoryTimelineController {
     }
   }
 
+  void deleteSegment(int slideIndex) {
+    _state?.deleteSegment(slideIndex);
+  }
+
   void nextSegment() {
     _state?.nextSegment();
   }
@@ -451,6 +455,11 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   int get _curSegmentIndex {
     return widget.buttonData.currentSegmentIndex;
+  }
+
+  void deleteSegment(int slideIndex) {
+    widget.buttonData.storyPages.removeAt(slideIndex);
+    setState(() {});
   }
 
   void nextSegment() {
