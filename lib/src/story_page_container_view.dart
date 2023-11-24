@@ -158,7 +158,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
               child: Center(
                 child: Icon(
                   Icons.no_photography_outlined,
-                  weight: 50,
+                  weight: 150,
                   color: Colors.white,
                 ),
               ),
