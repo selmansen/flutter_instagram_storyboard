@@ -181,6 +181,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
               InkWell(
                 onTap: () {
                   storyTimelineController[activeIndex].pause();
+                  storyBackgroundList.removeAt(0);
+                  storyTimelineController[activeIndex].deleteSegment(context);
                 },
                 child: Icon(
                   Icons.ac_unit_rounded,
