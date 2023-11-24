@@ -318,14 +318,14 @@ class StoryTimelineController {
   }
 
   void deleteSegment(BuildContext context) {
-    if (((_state?._numSegments ?? 1)) == 1) {
+    _state?.deleteSegment((_state?._curSegmentIndex ?? 0));
+    if (((_state?._numSegments ?? 1) - 1) == 1) {
       _state?.nextSegment();
     } else if ((_state?._curSegmentIndex ?? 0) == 0) {
       _state?.nextSegment();
     } else {
       _state?.previousSegment();
     }
-    _state?.deleteSegment((_state?._curSegmentIndex ?? 0));
   }
 
   void nextSegment() {
