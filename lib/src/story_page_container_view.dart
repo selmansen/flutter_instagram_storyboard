@@ -151,6 +151,18 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: CachedNetworkImage(
+            errorWidget: (context, url, error) => Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.black,
+              child: Center(
+                child: Icon(
+                  Icons.no_photography_outlined,
+                  weight: 50,
+                  color: Colors.white,
+                ),
+              ),
+            ),
             imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
             imageBuilder: (context, imageProvider) {
               _storyController.unpause();
