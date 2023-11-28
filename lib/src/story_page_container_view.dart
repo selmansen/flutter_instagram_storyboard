@@ -105,7 +105,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     }
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 15.0,
+        horizontal: 4,
         vertical: 10.0,
       ),
       child: Row(
