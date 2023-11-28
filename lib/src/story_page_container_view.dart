@@ -236,7 +236,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
                     Navigator.of(context).pop();
-                    print(_offsetY);
                   } else {
                     setState(() {
                       _offsetY = 0.0;
@@ -360,7 +359,6 @@ class StoryTimelineController {
 
   void pause() {
     _state?.pause();
-    print('pause');
   }
 
   void keyboardOpened() {
@@ -377,7 +375,6 @@ class StoryTimelineController {
 
   void unpause() {
     _state?.unpause();
-    print('unpaused');
   }
 
   void dispose() {
