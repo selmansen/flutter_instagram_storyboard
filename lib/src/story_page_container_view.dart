@@ -35,6 +35,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   Offset _pointerDownPosition = Offset.zero;
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
+  double _offsetY = 0.0;
 
   @override
   void initState() {
@@ -137,7 +138,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   }
 
   Widget _buildPageContent() {
-    _storyController.pause();
+    if (_offsetY == 0.0) _storyController.pause();
 
     return SingleChildScrollView(
       physics: NeverScrollableScrollPhysics(),
@@ -165,7 +166,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
             ),
             imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
             imageBuilder: (context, imageProvider) {
-              _storyController.unpause();
+              if (_offsetY == 0.0) _storyController.unpause();
 
               return Stack(
                 children: [
@@ -223,11 +224,24 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
             children: [
               Listener(
                 onPointerDown: (PointerDownEvent event) {
+                  if (_offsetY != 0.0) {
+                    setState(() {
+                      _offsetY = 0.0;
+                    });
+                  }
                   _pointerDownMillis = _stopwatch.elapsedMilliseconds;
                   _pointerDownPosition = event.position;
                   _storyController.pause();
                 },
                 onPointerUp: (PointerUpEvent event) {
+                  if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
+                    Navigator.of(context).pop();
+                    print(_offsetY);
+                  } else {
+                    setState(() {
+                      _offsetY = 0.0;
+                    });
+                  }
                   final pointerUpMillis = _stopwatch.elapsedMilliseconds;
                   final maxPressMillis = kPressTimeout.inMilliseconds * 2;
                   final diffMillis = pointerUpMillis - _pointerDownMillis;
@@ -244,6 +258,11 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     }
                   }
                   _storyController.unpause();
+                },
+                onPointerMove: (PointerMoveEvent event) {
+                  setState(() {
+                    _offsetY += event.delta.dy;
+                  });
                 },
                 child: _buildPageContent(),
               ),
@@ -277,7 +296,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       body: SafeArea(
         top: true,
         bottom: false,
-        child: _buildPageStructure(),
+        child: Transform.translate(
+          offset: Offset(0, _offsetY),
+          child: _buildPageStructure(),
+        ),
       ),
     );
   }
@@ -338,6 +360,7 @@ class StoryTimelineController {
 
   void pause() {
     _state?.pause();
+    print('pause');
   }
 
   void keyboardOpened() {
@@ -354,6 +377,7 @@ class StoryTimelineController {
 
   void unpause() {
     _state?.unpause();
+    print('unpaused');
   }
 
   void dispose() {

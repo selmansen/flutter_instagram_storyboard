@@ -186,7 +186,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
 
           return ClipRRect(
             clipper: _PageClipper(
-              borderRadius: BorderRadius.zero
+              borderRadius: BorderRadius.circular(16)
                   .resolve(
                     null,
                   )

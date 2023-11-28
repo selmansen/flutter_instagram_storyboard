@@ -181,11 +181,19 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
               InkWell(
                 onTap: () {
                   storyTimelineController[activeIndex].pause();
+                },
+                child: Icon(
+                  Icons.pause,
+                  color: Colors.white,
+                ),
+              ),
+              InkWell(
+                onTap: () {
                   storyBackgroundList.removeAt(0);
                   storyTimelineController[activeIndex].deleteSegment(context);
                 },
                 child: Icon(
-                  Icons.ac_unit_rounded,
+                  Icons.delete,
                   color: Colors.white,
                 ),
               )
