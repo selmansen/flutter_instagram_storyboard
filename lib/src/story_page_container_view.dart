@@ -14,6 +14,7 @@ class StoryPageContainerView extends StatefulWidget {
   final VoidCallback? onClosePressed;
   final double bottomSafeHeight;
   final StoryTimelineController? storyTimelineController;
+  final List<StoryButtonData> allButtonDatas;
 
   const StoryPageContainerView({
     Key? key,
@@ -23,6 +24,7 @@ class StoryPageContainerView extends StatefulWidget {
     this.onClosePressed,
     required this.bottomSafeHeight,
     required this.storyTimelineController,
+    required this.allButtonDatas,
   }) : super(key: key);
 
   @override
@@ -129,6 +131,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       child: StoryTimeline(
         controller: _storyController,
         buttonData: widget.buttonData,
+        allButtonDatas: widget.allButtonDatas,
       ),
     );
   }
@@ -344,7 +347,7 @@ class StoryTimelineController {
   }
 
   void deleteSegment(BuildContext context) {
-    _state?.deleteSegment((_state?._curSegmentIndex ?? 0));
+    _state?.deleteSegment();
     if (((_state?._numSegments ?? 1) - 1) == 1) {
       _state?.nextSegment();
     } else if ((_state?._curSegmentIndex ?? 0) == 0) {
@@ -352,6 +355,14 @@ class StoryTimelineController {
     } else {
       _state?.previousSegment();
     }
+  }
+
+  void deleteStory(int pageIndex) {
+    _state?.deleteStory(pageIndex);
+  }
+
+  void nextStory() {
+    _state?.nextStory();
   }
 
   void nextSegment() {
@@ -390,11 +401,13 @@ class StoryTimelineController {
 class StoryTimeline extends StatefulWidget {
   final StoryTimelineController controller;
   final StoryButtonData buttonData;
+  final List<StoryButtonData> allButtonDatas;
 
   const StoryTimeline({
     Key? key,
     required this.controller,
     required this.buttonData,
+    required this.allButtonDatas,
   }) : super(key: key);
 
   @override
@@ -490,9 +503,31 @@ class _StoryTimelineState extends State<StoryTimeline> {
     return widget.buttonData.currentSegmentIndex;
   }
 
-  void deleteSegment(int segmentIndex) {
-    widget.buttonData.storyPages.removeAt(segmentIndex);
+  void deleteSegment() {
+    if (_isKeyboardOpened) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    } else {
+      widget.buttonData.storyPages.removeAt(_curSegmentIndex);
+    }
     setState(() {});
+  }
+
+  void deleteStory(int pageIndex) {
+    if (_isKeyboardOpened) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    } else {
+      widget.allButtonDatas.removeAt(pageIndex);
+    }
+    setState(() {});
+  }
+
+  void nextStory() {
+    if (_isKeyboardOpened) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    } else {
+      _accumulatedTime = _maxAccumulator;
+      _onStoryComplete();
+    }
   }
 
   void nextSegment() {

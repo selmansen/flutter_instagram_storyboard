@@ -219,6 +219,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                         onStoryComplete: _onStoryComplete,
                         bottomSafeHeight: widget.settings.bottomSafeHeight,
                         storyTimelineController: widget.settings.storyTimelineController,
+                        allButtonDatas: widget.settings.allButtonDatas,
                       );
                       return _storyPageTransform.transform(
                         context,

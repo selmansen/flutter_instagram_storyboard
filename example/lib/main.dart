@@ -101,12 +101,31 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
           child: _buildButtonChild('user $i'),
           storyPages: [
             ...storyBackgroundList.map((e) => _createDummyPage(
-                  text: 'Want to buy a new car? Get our loan for the rest of your life!',
+                  text: '$i Want to buy a new car? Get our loan for the rest of your life!',
                   imageName: storyBackgroundList[i],
                 )),
           ],
           bottomBar: [...storyBackgroundList.map((e) => _buildMessageBar(activeIndex: i))],
-          topBar: [...storyBackgroundList.map((e) => Positioned(right: 60, top: 36, child: Text('...')))],
+          topBar: [
+            ...storyBackgroundList.map(
+              (e) => Positioned(
+                right: 60,
+                top: 36,
+                child: InkWell(
+                  onTap: () {
+                    storyTimelineController[i].deleteStory(i);
+                    storyBackgroundList.removeAt(i);
+                    storyTimelineController[i].nextStory();
+                    setState(() {});
+                  },
+                  child: Container(
+                    color: Colors.red,
+                    child: Text('User Remove'),
+                  ),
+                ),
+              ),
+            )
+          ],
           segmentDuration: durations,
         ),
       );
