@@ -208,8 +208,8 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     );
   }
 
-  Widget _buildSettingsButton() {
-    return widget.buttonData.settingsButton?[_curSegmentIndex] ?? SizedBox();
+  Widget _buildTopBar() {
+    return widget.buttonData.topBar?[_curSegmentIndex] ?? SizedBox();
   }
 
   bool _isLeftPartOfStory(Offset position) {
@@ -276,7 +276,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _buildCloseButton(),
                 ],
               ),
-              _buildSettingsButton(),
+              _buildTopBar(),
               _bottomBar(),
             ],
           ),

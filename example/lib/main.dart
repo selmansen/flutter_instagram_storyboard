@@ -106,7 +106,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 )),
           ],
           bottomBar: [...storyBackgroundList.map((e) => _buildMessageBar(activeIndex: i))],
-          settingsButton: [...storyBackgroundList.map((e) => Positioned(right: 60, top: 36, child: Text('...')))],
+          topBar: [...storyBackgroundList.map((e) => Positioned(right: 60, top: 36, child: Text('...')))],
           segmentDuration: durations,
         ),
       );
