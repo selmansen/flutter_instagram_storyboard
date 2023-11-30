@@ -75,7 +75,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     if (widget.buttonData.closeButton != null) {
       closeButton = widget.buttonData.closeButton!;
     } else {
-      closeButton = SizedBox(
+      closeButton = Container(
         height: 40.0,
         width: 40.0,
         child: MaterialButton(
@@ -107,7 +107,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 4,
-        vertical: 10.0,
+        vertical: 4,
       ),
       child: Row(
         children: [
@@ -123,7 +123,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       padding: EdgeInsets.only(
         top: widget.buttonData.timlinePadding?.top ?? 16.0,
         left: widget.buttonData.timlinePadding?.left ?? 16.0,
-        right: widget.buttonData.timlinePadding?.left ?? 16.0,
+        right: widget.buttonData.timlinePadding?.right ?? 16.0,
         bottom: widget.buttonData.timlinePadding?.bottom ?? 0.0,
       ),
       child: StoryTimeline(
@@ -208,6 +208,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     );
   }
 
+  Widget _buildSettingsButton() {
+    return widget.buttonData.settingsButton?[_curSegmentIndex] ?? SizedBox();
+  }
+
   bool _isLeftPartOfStory(Offset position) {
     if (!mounted) {
       return false;
@@ -272,6 +276,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _buildCloseButton(),
                 ],
               ),
+              _buildSettingsButton(),
               _bottomBar(),
             ],
           ),

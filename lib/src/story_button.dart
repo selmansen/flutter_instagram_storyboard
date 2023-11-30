@@ -198,6 +198,7 @@ class StoryButtonData {
   final Widget child;
   final List<Widget> storyPages;
   final List<Widget>? bottomBar;
+  final List<Widget>? settingsButton;
   final Widget? closeButton;
   final List<Duration> segmentDuration;
   final BoxDecoration containerBackgroundDecoration;
@@ -240,6 +241,7 @@ class StoryButtonData {
   /// if you need to hide it for some reason
   StoryButtonData({
     this.bottomBar,
+    this.settingsButton,
     this.allStoryWatched = false,
     this.currentSegmentIndex = 0,
     this.isWatched,
