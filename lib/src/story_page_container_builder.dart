@@ -148,11 +148,11 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
 
       if (delete) {
         if (widget.settings.allButtonDatas.length - 1 == _curPageIndex) {
+          updateActiveButton = widget.settings.allButtonDatas[_curPageIndex - (_curPageIndex == 0 ? 0 : 1)];
           widget.settings.allButtonDatas.removeAt(_curPageIndex);
-          updateActiveButton = widget.settings.allButtonDatas[_curPageIndex - 1];
         }
-        setState(() {});
       }
+      setState(() {});
     }
   }
 

@@ -531,6 +531,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void deleteStory() {
     widget.onStoryComplete.call(true);
+    _onSegmentComplete();
   }
 
   void nextStory() {
@@ -546,7 +547,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
     if (_isKeyboardOpened) {
       FocusManager.instance.primaryFocus?.unfocus();
     } else {
-      if (_isLastSegment || _curSegmentIndex < 0) {
+      if (_isLastSegment) {
         _accumulatedTime = _maxAccumulator;
         _onStoryComplete();
       } else {

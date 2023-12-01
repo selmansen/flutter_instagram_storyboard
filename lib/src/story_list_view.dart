@@ -85,7 +85,51 @@ class _StoryListViewState extends State<StoryListView> {
       return b.isVisibleCallback();
     }).toList();
     if (buttonDatas.isEmpty) {
-      return const SizedBox.shrink();
+      return SizedBox(
+        height: widget.listHeight,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: widget.paddingTop,
+            bottom: widget.paddingBottom,
+            left: widget.paddingLeft,
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+              onTap: () => widget.newStoryOnTap!(),
+              child: Column(
+                children: [
+                  Container(
+                    width: widget.buttonWidth,
+                    height: widget.buttonWidth,
+                    padding: const EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFF641F8F),
+                          Color(0xFFA046D9),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(widget.buttonWidth),
+                    ),
+                    child: ClipOval(
+                      child: Container(
+                        color: Colors.white,
+                        child: Center(
+                          child: widget.newStoryIcom != null ? Image.asset(widget.newStoryIcom!, width: 24) : Icon(Icons.add_a_photo_outlined, size: 24),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (widget.newStoryTitle != null) widget.newStoryTitle!
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
     }
     return SizedBox(
       height: widget.listHeight,
