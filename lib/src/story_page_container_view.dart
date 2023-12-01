@@ -532,7 +532,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void deleteStory() {
     widget.onStoryComplete.call(true);
-    _onSegmentComplete();
+    // _onSegmentComplete();
   }
 
   void nextStory() {
