@@ -130,6 +130,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                         storyTimelineController.removeAt(currentIndex);
                         storyList.removeAt(currentIndex);
                         storyButtonDataList.removeAt(currentIndex);
+                        print(currentIndex);
                         setState(() {});
                       },
                       child: Container(

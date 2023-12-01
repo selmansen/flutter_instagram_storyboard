@@ -87,8 +87,8 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
   /// its corresponding button
   void _scrollToActiveButton() {
     if (widget.settings.storyListScrollController.hasClients) {
-      final leftPos = _activeButtonData.buttonLeftPosition?.dx;
-      final rightPos = _activeButtonData.buttonRightPosition?.dx;
+      final leftPos = _activeButtonData?.buttonLeftPosition?.dx;
+      final rightPos = _activeButtonData?.buttonRightPosition?.dx;
       const additionalMargin = 12.0;
       if (leftPos != null && rightPos != null) {
         final curScrollPosition = widget.settings.storyListScrollController.position.pixels;
@@ -145,19 +145,22 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
       }
     } else {
       _close();
+
+      if (delete) {
+        if (widget.settings.allButtonDatas.length - 1 == _curPageIndex) {
+          widget.settings.allButtonDatas.removeAt(_curPageIndex);
+          updateActiveButton = widget.settings.allButtonDatas[_curPageIndex - 1];
+        }
+        setState(() {});
+      }
     }
   }
 
-  int get _curPageIndex {
-    if (!_pageController.hasClients) {
-      return _currentPage;
-    }
-    return _pageController.page?.floor() ?? 0;
-  }
+  int get _curPageIndex => !_pageController.hasClients ? _currentPage : _pageController.page?.floor() ?? 0;
 
-  StoryButtonData get _activeButtonData {
-    return widget.settings.allButtonDatas[_curPageIndex];
-  }
+  StoryButtonData? _activeButtonData;
+  StoryButtonData get activeButtonData => widget.settings.allButtonDatas[_curPageIndex];
+  set updateActiveButton(StoryButtonData? value) => _activeButtonData = value;
 
   @override
   void dispose() {
@@ -199,8 +202,8 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                     null,
                   )
                   .bottomLeft,
-              startX: _activeButtonData.buttonCenterPosition?.dx ?? widget.settings.tapPosition.dx,
-              startY: _activeButtonData.buttonCenterPosition?.dy ?? widget.settings.tapPosition.dy,
+              startX: _activeButtonData?.buttonCenterPosition?.dx ?? widget.settings.tapPosition.dx,
+              startY: _activeButtonData?.buttonCenterPosition?.dy ?? widget.settings.tapPosition.dy,
               animationValue: animationValue,
             ),
             child: Scaffold(
