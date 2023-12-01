@@ -354,15 +354,16 @@ class StoryTimelineController {
   int currentSegmentIndex() => _state?.currentSegmentIndex() ?? 0;
 
   void deleteSegment(BuildContext context) {
-    _state?.deleteSegment();
     if ((_state?._curSegmentIndex ?? 0) == 0) {
-      if (((_state?._numSegments ?? 0) - 1) == 0) {
+      if (((_state?._numSegments ?? 0) - 1) == 1) {
         Navigator.pop(context);
         _state?.deleteStory();
       } else {
+        _state?.deleteSegment();
         _state?.nextSegment();
       }
     } else {
+      _state?.deleteSegment();
       _state?.previousSegment();
     }
   }

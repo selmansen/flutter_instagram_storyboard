@@ -268,7 +268,14 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 onTap: () {
                   storyTimelineController[activeIndex].deleteSegment(context);
                   segmentList.removeAt(activeIndex);
-                  print(activeIndex);
+                  if ((segmentList.length - 1) == 0) {
+                    final currentIndex = storyTimelineController[0].currentIndex();
+                    storyTimelineController[currentIndex].deleteStory();
+                    storyTimelineController.removeAt(currentIndex);
+                    storyList.removeAt(currentIndex);
+                    storyButtonDataList.removeAt(currentIndex);
+                  }
+                  setState(() {});
                 },
                 child: Icon(
                   Icons.delete,
