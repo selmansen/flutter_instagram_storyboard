@@ -27,6 +27,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
   double _totalWidth = 0.0;
   double _pageWidth = 0.0;
   bool _isClosed = false;
+  int lateCurrentIndex = 0;
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
     _pageController.addListener(() {
       setState(() {
         _currentPage = _pageController.page!.floor();
+        lateCurrentIndex = _curPageIndex;
         _pageDelta = _pageController.page! - _currentPage;
         final isFirst = _currentPage == 0;
         final isLast = _currentPage == widget.settings.allButtonDatas.length - 1;
@@ -125,16 +127,22 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
     if (mounted) {
       _pageWidth = context.size!.width;
       _totalWidth = _pageWidth * (widget.settings.allButtonDatas.length - 1);
+      lateCurrentIndex = _curPageIndex;
     }
   }
 
-  Future _onStoryComplete() async {
+  Future _onStoryComplete(bool delete) async {
     if (_curPageIndex < widget.settings.allButtonDatas.length - 1) {
-      _pageController.animateToPage(
-        _curPageIndex + 1,
-        duration: kThemeAnimationDuration,
-        curve: Curves.linear,
-      );
+      if (delete) {
+        widget.settings.allButtonDatas.removeAt(_curPageIndex);
+        setState(() {});
+      } else {
+        _pageController.animateToPage(
+          _curPageIndex + 1,
+          duration: kThemeAnimationDuration,
+          curve: Curves.linear,
+        );
+      }
     } else {
       _close();
     }
@@ -216,10 +224,11 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                         buttonData: buttonData,
                         onClosePressed: _close,
                         pageController: _pageController,
-                        onStoryComplete: _onStoryComplete,
+                        onStoryComplete: (bool delete) => _onStoryComplete(delete),
                         bottomSafeHeight: widget.settings.bottomSafeHeight,
                         storyTimelineController: widget.settings.storyTimelineController,
                         allButtonDatas: widget.settings.allButtonDatas,
+                        currentIndex: lateCurrentIndex,
                       );
                       return _storyPageTransform.transform(
                         context,

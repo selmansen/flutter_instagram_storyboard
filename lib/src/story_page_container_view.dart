@@ -9,12 +9,13 @@ import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
 
 class StoryPageContainerView extends StatefulWidget {
   final StoryButtonData buttonData;
-  final VoidCallback onStoryComplete;
+  final Function(bool delete) onStoryComplete;
   final PageController? pageController;
   final VoidCallback? onClosePressed;
   final double bottomSafeHeight;
   final StoryTimelineController? storyTimelineController;
   final List<StoryButtonData> allButtonDatas;
+  final int currentIndex;
 
   const StoryPageContainerView({
     Key? key,
@@ -25,6 +26,7 @@ class StoryPageContainerView extends StatefulWidget {
     required this.bottomSafeHeight,
     required this.storyTimelineController,
     required this.allButtonDatas,
+    required this.currentIndex,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
 
   void _onTimelineEvent(StoryTimelineEvent event) {
     if (event == StoryTimelineEvent.storyComplete) {
-      widget.onStoryComplete.call();
+      widget.onStoryComplete.call(false);
     }
     setState(() {});
   }
@@ -132,6 +134,8 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         controller: _storyController,
         buttonData: widget.buttonData,
         allButtonDatas: widget.allButtonDatas,
+        onStoryComplete: (bool delete) => widget.onStoryComplete(delete),
+        currentIndex: widget.currentIndex,
       ),
     );
   }
@@ -346,19 +350,25 @@ class StoryTimelineController {
     }
   }
 
+  int currentIndex() => _state?.currentIndex() ?? 0;
+  int currentSegmentIndex() => _state?.currentSegmentIndex() ?? 0;
+
   void deleteSegment(BuildContext context) {
     _state?.deleteSegment();
-    if (((_state?._numSegments ?? 1) - 1) == 1) {
-      _state?.nextSegment();
-    } else if ((_state?._curSegmentIndex ?? 0) == 0) {
-      _state?.nextSegment();
+    if ((_state?._curSegmentIndex ?? 0) == 0) {
+      if (((_state?._numSegments ?? 0) - 1) == 0) {
+        Navigator.pop(context);
+        _state?.deleteStory();
+      } else {
+        _state?.nextSegment();
+      }
     } else {
       _state?.previousSegment();
     }
   }
 
-  void deleteStory(int pageIndex) {
-    _state?.deleteStory(pageIndex);
+  void deleteStory() {
+    _state?.deleteStory();
   }
 
   void nextStory() {
@@ -402,12 +412,16 @@ class StoryTimeline extends StatefulWidget {
   final StoryTimelineController controller;
   final StoryButtonData buttonData;
   final List<StoryButtonData> allButtonDatas;
+  final Function(bool delete) onStoryComplete;
+  final int currentIndex;
 
   const StoryTimeline({
     Key? key,
     required this.controller,
     required this.buttonData,
     required this.allButtonDatas,
+    required this.onStoryComplete,
+    required this.currentIndex,
   }) : super(key: key);
 
   @override
@@ -503,6 +517,9 @@ class _StoryTimelineState extends State<StoryTimeline> {
     return widget.buttonData.currentSegmentIndex;
   }
 
+  int currentIndex() => widget.currentIndex;
+  int currentSegmentIndex() => _curSegmentIndex;
+
   void deleteSegment() {
     if (_isKeyboardOpened) {
       FocusManager.instance.primaryFocus?.unfocus();
@@ -512,13 +529,8 @@ class _StoryTimelineState extends State<StoryTimeline> {
     setState(() {});
   }
 
-  void deleteStory(int pageIndex) {
-    if (_isKeyboardOpened) {
-      FocusManager.instance.primaryFocus?.unfocus();
-    } else {
-      widget.allButtonDatas.removeAt(pageIndex);
-    }
-    setState(() {});
+  void deleteStory() {
+    widget.onStoryComplete.call(true);
   }
 
   void nextStory() {
@@ -534,7 +546,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
     if (_isKeyboardOpened) {
       FocusManager.instance.primaryFocus?.unfocus();
     } else {
-      if (_isLastSegment) {
+      if (_isLastSegment || _curSegmentIndex < 0) {
         _accumulatedTime = _maxAccumulator;
         _onStoryComplete();
       } else {

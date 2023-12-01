@@ -35,9 +35,9 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   static const double _bottomSafeHeight = 90;
   final _scrollController = ScrollController();
   List<StoryTimelineController> storyTimelineController = [];
-  List<Duration> durations = [];
+  List<StoryButtonData> storyButtonDataList = [];
 
-  final List<String> storyBackgroundList = [
+  List<String> storyList = [
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
@@ -45,6 +45,23 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
   ];
+
+  final List<String> segmentList = [
+    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    storyTimelineController.addAll(List.filled(storyList.length, StoryTimelineController()));
+    _generateStoryButtonDataList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,66 +94,104 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            buttonDatas: [..._generateStoryButtonDataList(storyBackgroundList.length)],
+            buttonDatas: [...storyButtonDataList],
           ),
         ],
       ),
     );
   }
 
-  List<StoryButtonData> _generateStoryButtonDataList(int n) {
-    List<StoryButtonData> storyButtonDataList = [];
+  _generateStoryButtonDataList() {
+    final durationList = List.generate(storyList.length, (index) => Duration(milliseconds: 10000));
 
-    for (int i = 0; i < n; i++) {
-      storyTimelineController.add(StoryTimelineController());
-      durations.add(Duration(milliseconds: 5000));
+    for (int i = 0; i < storyList.length; i++) {
       storyButtonDataList.add(
         StoryButtonData(
           storyController: storyTimelineController[i],
           allStoryWatched: i > 0,
           currentSegmentIndex: 0,
-          backgroundImage: storyBackgroundList,
-          isWatched: (int storyIndex) => print(storyIndex),
-          buttonDecoration: _buildButtonDecoration(storyBackgroundList[0]),
+          backgroundImage: segmentList,
+          isWatched: (int storyIndex) => print('segment index $storyIndex'),
+          buttonDecoration: _buildButtonDecoration(storyList[0]),
           child: _buildButtonChild('user $i'),
-          storyPages: [
-            ...storyBackgroundList.map((e) => _createDummyPage(
-                  text: '$i Want to buy a new car? Get our loan for the rest of your life!',
-                  imageName: storyBackgroundList[i],
-                )),
-          ],
-          bottomBar: [...storyBackgroundList.map((e) => _buildMessageBar(activeIndex: i))],
+          storyPages: [...segmentList.map((e) => _createDummyPage(text: '$i Want to buy a new car? Get our loan for the rest of your life!'))],
+          bottomBar: [...segmentList.map((e) => _buildMessageBar(activeIndex: i))],
           topBar: [
-            ...storyBackgroundList.map(
-              (e) => Positioned(
-                right: 60,
-                top: 36,
-                child: InkWell(
-                  onTap: () {
-                    storyTimelineController[i].deleteStory(i);
-                    storyBackgroundList.removeAt(i);
-                    storyTimelineController[i].nextStory();
-                    setState(() {});
-                  },
-                  child: Container(
-                    color: Colors.red,
-                    child: Text('User Remove'),
+            ...segmentList.map(
+              (e) => Stack(
+                children: [
+                  Positioned(
+                    right: 60,
+                    top: 36,
+                    child: InkWell(
+                      onTap: () {
+                        final currentIndex = storyTimelineController[0].currentIndex();
+                        storyTimelineController[currentIndex].deleteStory();
+                        storyTimelineController.removeAt(currentIndex);
+                        storyList.removeAt(currentIndex);
+                        storyButtonDataList.removeAt(currentIndex);
+                        setState(() {});
+                      },
+                      child: Container(
+                        color: Colors.red,
+                        child: Text('User Remove'),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             )
           ],
-          segmentDuration: durations,
+          segmentDuration: durationList,
         ),
       );
     }
+
+    // return List.generate(storyList.length, (index) {
+    //   final durationList = List.generate(storyList.length, (index) => Duration(milliseconds: 10000));
+
+    //   return StoryButtonData(
+    //     storyController: storyTimelineController[index],
+    //     allStoryWatched: index > 0,
+    //     currentSegmentIndex: 0,
+    //     backgroundImage: segmentList,
+    //     isWatched: (int storyIndex) => print(storyIndex),
+    //     buttonDecoration: _buildButtonDecoration(storyList[0]),
+    //     child: _buildButtonChild('user $index'),
+    //     storyPages: [...segmentList.map((e) => _createDummyPage(text: '$index Want to buy a new car? Get our loan for the rest of your life!'))],
+    //     bottomBar: [...segmentList.map((e) => _buildMessageBar(activeIndex: index))],
+    //     topBar: [
+    //       ...segmentList.map(
+    //         (e) => Stack(
+    //           children: [
+    //             Positioned(
+    //               right: 60,
+    //               top: 36,
+    //               child: InkWell(
+    //                 onTap: () {
+    //                   storyTimelineController[index].deleteStory(index);
+    //                   storyTimelineController.removeAt(index);
+    //                   storyList.removeAt(index);
+    //                 },
+    //                 child: Container(
+    //                   color: Colors.red,
+    //                   child: Text('User Remove'),
+    //                 ),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       )
+    //     ],
+    //     segmentDuration: durationList,
+    //   );
+    // });
 
     return storyButtonDataList;
   }
 
   Widget _createDummyPage({
     required String text,
-    required String imageName,
   }) {
     return SizedBox(
       width: double.infinity,
@@ -210,8 +265,9 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
               ),
               InkWell(
                 onTap: () {
-                  storyBackgroundList.removeAt(0);
                   storyTimelineController[activeIndex].deleteSegment(context);
+                  segmentList.removeAt(activeIndex);
+                  print(activeIndex);
                 },
                 child: Icon(
                   Icons.delete,
