@@ -52,7 +52,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
   ];
 
   @override
@@ -266,8 +265,9 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
               ),
               InkWell(
                 onTap: () {
-                  storyTimelineController[activeIndex].deleteSegment(context);
+                  storyTimelineController[activeIndex].deleteSegment(context, segmentList.length);
                   segmentList.removeAt(activeIndex);
+
                   if ((segmentList.length - 1) == 0) {
                     final currentIndex = storyTimelineController[0].currentIndex();
                     storyTimelineController[currentIndex].deleteStory();
