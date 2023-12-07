@@ -17,7 +17,7 @@ class StoryListView extends StatefulWidget {
   final ScrollController scrollController;
   final bool allStoryUploaded;
   final Widget? indicator;
-  final String? newStoryIcom;
+  final Widget? newStoryIcom;
   final Function()? newStoryOnTap;
   final Widget? newStoryTitle;
   final Widget? bottomBar;
@@ -118,7 +118,7 @@ class _StoryListViewState extends State<StoryListView> {
                       child: Container(
                         color: Colors.white,
                         child: Center(
-                          child: widget.newStoryIcom != null ? Image.asset(widget.newStoryIcom!, width: 24) : Icon(Icons.add_a_photo_outlined, size: 24),
+                          child: widget.newStoryIcom != null ? widget.newStoryIcom : Icon(Icons.add_a_photo_outlined, size: 24),
                         ),
                       ),
                     ),
@@ -177,7 +177,7 @@ class _StoryListViewState extends State<StoryListView> {
                               child: Container(
                                 color: Colors.white,
                                 child: Center(
-                                  child: widget.newStoryIcom != null ? Image.asset(widget.newStoryIcom!, width: 24) : Icon(Icons.add_a_photo_outlined, size: 24),
+                                  child: widget.newStoryIcom != null ? widget.newStoryIcom : Icon(Icons.add_a_photo_outlined, size: 24),
                                 ),
                               ),
                             ),
