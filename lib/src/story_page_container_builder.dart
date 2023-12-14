@@ -220,6 +220,11 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                   child: PageView.builder(
                     physics: _storyPageTransform.pageScrollPhysics,
                     controller: _pageController,
+                    onPageChanged: (value) {
+                      if (widget.settings.buttonData.currentSegmentIndex == (widget.settings.buttonData.storyPages.length - 1)) {
+                        widget.settings.buttonData.markAsWatched();
+                      }
+                    },
                     itemBuilder: ((context, index) {
                       final childIndex = index % itemCount;
                       final buttonData = widget.settings.allButtonDatas[childIndex];
@@ -232,6 +237,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                         storyTimelineController: widget.settings.storyTimelineController,
                         allButtonDatas: widget.settings.allButtonDatas,
                         currentIndex: lateCurrentIndex,
+                        fingerSwipeUp: widget.settings.fingerSwipeUp,
                       );
                       return _storyPageTransform.transform(
                         context,

@@ -77,8 +77,8 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             scrollController: _scrollController,
             listHeight: 100,
             paddingTop: 16,
-            pageTransform: const StoryPage3DTransform(),
             newStoryOnTap: () => print('new story'),
+            fingerSwipeUp: () => print('fingerSwipeUp'),
             newStoryTitle: Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
@@ -129,7 +129,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
                         storyTimelineController.removeAt(currentIndex);
                         storyList.removeAt(currentIndex);
                         storyButtonDataList.removeAt(currentIndex);
-                        print(currentIndex);
                         setState(() {});
                       },
                       child: Container(
@@ -146,46 +145,6 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
         ),
       );
     }
-
-    // return List.generate(storyList.length, (index) {
-    //   final durationList = List.generate(storyList.length, (index) => Duration(milliseconds: 10000));
-
-    //   return StoryButtonData(
-    //     storyController: storyTimelineController[index],
-    //     allStoryWatched: index > 0,
-    //     currentSegmentIndex: 0,
-    //     backgroundImage: segmentList,
-    //     isWatched: (int storyIndex) => print(storyIndex),
-    //     buttonDecoration: _buildButtonDecoration(storyList[0]),
-    //     child: _buildButtonChild('user $index'),
-    //     storyPages: [...segmentList.map((e) => _createDummyPage(text: '$index Want to buy a new car? Get our loan for the rest of your life!'))],
-    //     bottomBar: [...segmentList.map((e) => _buildMessageBar(activeIndex: index))],
-    //     topBar: [
-    //       ...segmentList.map(
-    //         (e) => Stack(
-    //           children: [
-    //             Positioned(
-    //               right: 60,
-    //               top: 36,
-    //               child: InkWell(
-    //                 onTap: () {
-    //                   storyTimelineController[index].deleteStory(index);
-    //                   storyTimelineController.removeAt(index);
-    //                   storyList.removeAt(index);
-    //                 },
-    //                 child: Container(
-    //                   color: Colors.red,
-    //                   child: Text('User Remove'),
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       )
-    //     ],
-    //     segmentDuration: durationList,
-    //   );
-    // });
 
     return storyButtonDataList;
   }

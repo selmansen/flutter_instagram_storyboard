@@ -16,6 +16,7 @@ class StoryPageContainerView extends StatefulWidget {
   final StoryTimelineController? storyTimelineController;
   final List<StoryButtonData> allButtonDatas;
   final int currentIndex;
+  final Function()? fingerSwipeUp;
 
   const StoryPageContainerView({
     Key? key,
@@ -27,6 +28,7 @@ class StoryPageContainerView extends StatefulWidget {
     required this.storyTimelineController,
     required this.allButtonDatas,
     required this.currentIndex,
+    this.fingerSwipeUp,
   }) : super(key: key);
 
   @override
@@ -270,9 +272,13 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _storyController.unpause();
                 },
                 onPointerMove: (PointerMoveEvent event) {
-                  setState(() {
-                    _offsetY += event.delta.dy;
-                  });
+                  if (event.delta.dy > 0) {
+                    setState(() {
+                      _offsetY += event.delta.dy;
+                    });
+                  } else if (event.delta.dy < -2) {
+                    if (widget.fingerSwipeUp != null) widget.fingerSwipeUp!();
+                  }
                 },
                 child: _buildPageContent(),
               ),
