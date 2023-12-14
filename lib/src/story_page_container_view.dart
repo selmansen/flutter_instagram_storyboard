@@ -16,7 +16,7 @@ class StoryPageContainerView extends StatefulWidget {
   final StoryTimelineController? storyTimelineController;
   final List<StoryButtonData> allButtonDatas;
   final int currentIndex;
-  final Function(int? currentSegmentIndex) fingerSwipeUp;
+  final Function(int? currentSegmentIndex, int? currentIndex) fingerSwipeUp;
 
   const StoryPageContainerView({
     Key? key,
@@ -55,6 +55,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   @override
   void didFirstBuildFinish(BuildContext context) {
     widget.pageController?.addListener(_onPageControllerUpdate);
+    widget.buttonData.isWatched?.call(_curSegmentIndex);
   }
 
   void _onPageControllerUpdate() {
@@ -276,8 +277,8 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     setState(() {
                       _offsetY += event.delta.dy;
                     });
-                  } else if (event.delta.dy < -2) {
-                    widget.fingerSwipeUp(_curSegmentIndex);
+                  } else if (event.delta.dy < -30) {
+                    widget.fingerSwipeUp(_curSegmentIndex, widget.currentIndex);
                   }
                 },
                 child: _buildPageContent(),
@@ -455,9 +456,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
       _onTimer,
     );
     widget.controller._state = this;
-    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryStart) {
-      widget.buttonData.markAsWatched();
-    }
   }
 
   void _setTimelineAvailable(bool value) {
@@ -486,13 +484,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
   }
 
   void _onStoryComplete() {
-    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onStoryEnd) {
-      widget.buttonData.markAsWatched();
-    }
-
-    if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
-      widget.buttonData.markAsWatched();
-    }
+    widget.buttonData.markAsWatched();
     widget.controller._onStoryComplete();
   }
 
@@ -538,7 +530,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void deleteStory() {
     widget.onStoryComplete.call(true);
-    // _onSegmentComplete();
   }
 
   void nextStory() {

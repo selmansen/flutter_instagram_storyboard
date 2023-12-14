@@ -237,7 +237,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                         storyTimelineController: widget.settings.storyTimelineController,
                         allButtonDatas: widget.settings.allButtonDatas,
                         currentIndex: lateCurrentIndex,
-                        fingerSwipeUp: (currentSegmentIndex) => widget.settings.fingerSwipeUp(currentSegmentIndex),
+                        fingerSwipeUp: (currentSegmentIndex, currentIndex) => widget.settings.fingerSwipeUp(currentSegmentIndex, currentIndex),
                       );
                       return _storyPageTransform.transform(
                         context,

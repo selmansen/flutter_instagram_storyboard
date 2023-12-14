@@ -78,7 +78,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             listHeight: 100,
             paddingTop: 16,
             newStoryOnTap: () => print('new story'),
-            fingerSwipeUp: (currentSegmentIndex) => print('fingerSwipeUp'),
+            fingerSwipeUp: (currentSegmentIndex, currentIndex) => currentIndex == 0 ? print('fingerSwipeUp -> segmentIndex:$currentSegmentIndex, currentIndex:$currentIndex') : null,
             newStoryTitle: Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
@@ -107,7 +107,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       storyButtonDataList.add(
         StoryButtonData(
           storyController: storyTimelineController[i],
-          allStoryWatched: i > 0,
+          allStoryWatched: false,
           currentSegmentIndex: 0,
           backgroundImage: segmentList,
           isWatched: (int storyIndex) => print('segment index $storyIndex'),

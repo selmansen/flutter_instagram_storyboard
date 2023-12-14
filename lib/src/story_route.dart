@@ -14,7 +14,7 @@ class StoryContainerSettings {
   final ScrollController storyListScrollController;
   final double bottomSafeHeight;
   final StoryTimelineController? storyTimelineController;
-  final Function(int? currentSegmentIndex) fingerSwipeUp;
+  final Function(int? currentSegmentIndex, int? currentIndex) fingerSwipeUp;
 
   bool safeAreaTop;
   bool safeAreaBottom;
