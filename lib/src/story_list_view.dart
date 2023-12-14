@@ -22,7 +22,7 @@ class StoryListView extends StatefulWidget {
   final Widget? newStoryTitle;
   final Widget? bottomBar;
   final double bottomSafeHeight;
-  final Function()? fingerSwipeUp;
+  final Function(int? currentSegmentIndex)? fingerSwipeUp;
 
   const StoryListView({
     Key? key,
@@ -70,7 +70,7 @@ class _StoryListViewState extends State<StoryListView> {
           pageTransform: widget.pageTransform,
           storyListScrollController: widget.scrollController,
           bottomSafeHeight: widget.bottomSafeHeight,
-          fingerSwipeUp: widget.fingerSwipeUp,
+          fingerSwipeUp: (currentSegmentIndex) => widget.fingerSwipeUp != null ? widget.fingerSwipeUp!(currentSegmentIndex) : null,
         ),
         duration: buttonData.pageAnimationDuration,
       ),

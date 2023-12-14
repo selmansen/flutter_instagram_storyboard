@@ -78,7 +78,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
             listHeight: 100,
             paddingTop: 16,
             newStoryOnTap: () => print('new story'),
-            fingerSwipeUp: () => print('fingerSwipeUp'),
+            fingerSwipeUp: (currentSegmentIndex) => print('fingerSwipeUp'),
             newStoryTitle: Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(

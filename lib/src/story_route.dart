@@ -14,13 +14,13 @@ class StoryContainerSettings {
   final ScrollController storyListScrollController;
   final double bottomSafeHeight;
   final StoryTimelineController? storyTimelineController;
-  final Function()? fingerSwipeUp;
+  final Function(int? currentSegmentIndex) fingerSwipeUp;
 
   bool safeAreaTop;
   bool safeAreaBottom;
 
   StoryContainerSettings({
-    this.fingerSwipeUp,
+    required this.fingerSwipeUp,
     required this.bottomSafeHeight,
     required this.buttonData,
     required this.allButtonDatas,
