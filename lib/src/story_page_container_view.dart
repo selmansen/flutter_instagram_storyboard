@@ -277,8 +277,9 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     setState(() {
                       _offsetY += event.delta.dy;
                     });
-                  } else if (event.delta.dy < -30) {
+                  } else if (event.delta.dy < -10) {
                     widget.fingerSwipeUp(_curSegmentIndex, widget.currentIndex);
+                    _storyController.pause();
                   }
                 },
                 child: _buildPageContent(),
