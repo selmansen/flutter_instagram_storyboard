@@ -582,12 +582,10 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void keyboardOpened() {
     _isKeyboardOpened = true;
-    setState(() {});
   }
 
   void keyboardClosed() {
     _isKeyboardOpened = false;
-    setState(() {});
   }
 
   @override
