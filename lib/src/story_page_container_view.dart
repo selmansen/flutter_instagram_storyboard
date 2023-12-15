@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
+import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
 
 class StoryPageContainerView extends StatefulWidget {
   final StoryButtonData buttonData;
@@ -581,10 +582,12 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
   void keyboardOpened() {
     _isKeyboardOpened = true;
+    setState(() {});
   }
 
   void keyboardClosed() {
     _isKeyboardOpened = false;
+    setState(() {});
   }
 
   @override
