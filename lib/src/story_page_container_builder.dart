@@ -224,6 +224,7 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                       if (widget.settings.buttonData.currentSegmentIndex == (widget.settings.buttonData.storyPages.length - 1)) {
                         widget.settings.buttonData.markAsWatched();
                       }
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
                     itemBuilder: ((context, index) {
                       final childIndex = index % itemCount;
