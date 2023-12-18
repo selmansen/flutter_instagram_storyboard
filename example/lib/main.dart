@@ -54,6 +54,14 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
   ];
 
+  final List<String> mediaTypeList = [
+    'video',
+    'video',
+    'video',
+    'video',
+    'video',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -110,6 +118,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
           allStoryWatched: false,
           currentSegmentIndex: 0,
           backgroundImage: segmentList,
+          mediaType: mediaTypeList,
           isWatched: (int storyIndex) => print('segment index $storyIndex'),
           buttonDecoration: _buildButtonDecoration(storyList[0]),
           child: _buildButtonChild('user $i'),

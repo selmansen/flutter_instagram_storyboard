@@ -6,7 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
-import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
+import 'package:video_player/video_player.dart';
 
 class StoryPageContainerView extends StatefulWidget {
   final StoryButtonData buttonData;
@@ -38,17 +38,26 @@ class StoryPageContainerView extends StatefulWidget {
 
 class _StoryPageContainerViewState extends State<StoryPageContainerView> with FirstBuildMixin {
   late StoryTimelineController _storyController;
+  late VideoPlayerController _videoController;
   final Stopwatch _stopwatch = Stopwatch();
   Offset _pointerDownPosition = Offset.zero;
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
   double _offsetY = 0.0;
+  bool videoContent = false;
 
   @override
   void initState() {
     _storyController = widget.buttonData.storyController ?? StoryTimelineController();
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
+
+    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'video') {
+      setState(() {
+        videoContent = true;
+      });
+      initializeVideo();
+    }
 
     super.initState();
   }
@@ -76,6 +85,12 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       widget.onStoryComplete.call(false);
     }
     setState(() {});
+  }
+
+  initializeVideo() {
+    _videoController = VideoPlayerController.networkUrl(Uri.parse("https://budyboo-medias-stage.s3.eu-central-1.amazonaws.com/draft/64f990422edab1407264303e/high/2e39ae71-57db-457e-b5ab-7301b4a29199"));
+    _videoController.initialize().then((value) => setState(() {}));
+    _videoController.play();
   }
 
   Widget _buildCloseButton() {
@@ -162,47 +177,86 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: CachedNetworkImage(
-            errorWidget: (context, url, error) => Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.black,
-              child: Center(
-                child: Icon(
-                  Icons.no_photography_outlined,
-                  weight: 150,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
-            imageBuilder: (context, imageProvider) {
-              if (_offsetY == 0.0) _storyController.unpause();
-
-              return Stack(
-                children: [
-                  Container(
+          child: Builder(
+            builder: (context) {
+              if (videoContent) {
+                return _videoController.value.isInitialized
+                    ? Builder(builder: (context) {
+                        if (_offsetY == 0.0) _storyController.unpause();
+                        return AspectRatio(
+                          aspectRatio: _videoController.value.aspectRatio,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: <Widget>[
+                              VideoPlayer(_videoController),
+                            ],
+                          ),
+                        );
+                      })
+                    : const Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.transparent,
+                          color: Colors.white,
+                        ),
+                      );
+              } else if (widget.buttonData.mediaType?[_curSegmentIndex] == "image") {
+                return CachedNetworkImage(
+                  errorWidget: (context, url, error) => Container(
                     width: double.infinity,
                     height: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                    color: Colors.black,
+                    child: Center(
+                      child: Icon(
+                        Icons.no_photography_outlined,
+                        weight: 150,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  widget.buttonData.storyPages[_curSegmentIndex],
-                ],
-              );
-            },
-            fadeOutDuration: const Duration(milliseconds: 150),
-            fadeInDuration: const Duration(milliseconds: 150),
-            progressIndicatorBuilder: (context, url, progress) {
-              return Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.black,
-                  color: Colors.white,
-                  value: progress.progress,
-                ),
-              );
+                  imageUrl: widget.buttonData.backgroundImage[_curSegmentIndex],
+                  imageBuilder: (context, imageProvider) {
+                    if (_offsetY == 0.0) _storyController.unpause();
+
+                    return Stack(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                          ),
+                        ),
+                        widget.buttonData.storyPages[_curSegmentIndex],
+                      ],
+                    );
+                  },
+                  fadeOutDuration: const Duration(milliseconds: 150),
+                  fadeInDuration: const Duration(milliseconds: 150),
+                  progressIndicatorBuilder: (context, url, progress) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.black,
+                        color: Colors.white,
+                        value: progress.progress,
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.black,
+                  child: Center(
+                    child: Icon(
+                      Icons.no_photography_outlined,
+                      weight: 150,
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }
             },
           ),
         ),
@@ -247,6 +301,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _pointerDownMillis = _stopwatch.elapsedMilliseconds;
                   _pointerDownPosition = event.position;
                   _storyController.pause();
+                  if (videoContent) _videoController.pause();
                 },
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
@@ -272,6 +327,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     }
                   }
                   _storyController.unpause();
+                  if (videoContent) _videoController.play();
                 },
                 onPointerMove: (PointerMoveEvent event) {
                   if (event.delta.dy > 0) {
@@ -281,6 +337,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   } else if (event.delta.dy < -10 && event.delta.dx == 0) {
                     widget.fingerSwipeUp(_curSegmentIndex, widget.currentIndex);
                     _storyController.pause();
+                    if (videoContent) _videoController.pause();
                   }
                 },
                 child: _buildPageContent(),
@@ -306,6 +363,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     widget.pageController?.removeListener(_onPageControllerUpdate);
     _stopwatch.stop();
     _storyController.removeListener(_onTimelineEvent);
+    if (videoContent) _videoController.dispose();
     super.dispose();
   }
 

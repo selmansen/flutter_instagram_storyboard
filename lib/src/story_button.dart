@@ -210,6 +210,7 @@ class StoryButtonData {
   final IsVisibleCallback isVisibleCallback;
   final Function(int storyIndex)? isWatched;
   final List<String> backgroundImage;
+  final List<String>? mediaType;
   bool allStoryWatched;
   int currentSegmentIndex;
 
@@ -245,6 +246,7 @@ class StoryButtonData {
     this.currentSegmentIndex = 0,
     this.isWatched,
     required this.backgroundImage,
+    this.mediaType,
     this.storyWatchedContract = StoryWatchedContract.onSegmentEnd,
     this.storyController,
     this.aspectRatio = 1.0,
