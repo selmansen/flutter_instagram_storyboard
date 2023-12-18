@@ -88,7 +88,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   }
 
   initializeVideo() {
-    _videoController = VideoPlayerController.networkUrl(Uri.parse("https://budyboo-medias-stage.s3.eu-central-1.amazonaws.com/draft/64f990422edab1407264303e/high/2e39ae71-57db-457e-b5ab-7301b4a29199"));
+    _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.buttonData.backgroundImage[_curSegmentIndex]));
     _videoController.initialize().then((value) => setState(() {}));
     _videoController.play();
   }
