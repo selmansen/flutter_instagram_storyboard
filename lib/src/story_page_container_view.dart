@@ -52,7 +52,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
 
-    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'video') {
+    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
       setState(() {
         videoContent = true;
       });
@@ -199,7 +199,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                           color: Colors.white,
                         ),
                       );
-              } else if (widget.buttonData.mediaType?[_curSegmentIndex] == "image") {
+              } else if (widget.buttonData.mediaType?[_curSegmentIndex] == "IMAGE") {
                 return CachedNetworkImage(
                   errorWidget: (context, url, error) => Container(
                     width: double.infinity,
