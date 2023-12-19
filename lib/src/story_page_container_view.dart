@@ -38,13 +38,11 @@ class StoryPageContainerView extends StatefulWidget {
 
 class _StoryPageContainerViewState extends State<StoryPageContainerView> with FirstBuildMixin {
   late StoryTimelineController _storyController;
-  late VideoPlayerController _videoController;
   final Stopwatch _stopwatch = Stopwatch();
   Offset _pointerDownPosition = Offset.zero;
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
   double _offsetY = 0.0;
-  bool videoContent = false;
 
   @override
   void initState() {
@@ -52,18 +50,19 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
 
-    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
-      setState(() {
-        videoContent = true;
-      });
-      initializeVideo();
-    }
-
     super.initState();
   }
 
   @override
-  void didFirstBuildFinish(BuildContext context) {
+  void didFirstBuildFinish(BuildContext context) async {
+    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
+      await _storyController.videoInit();
+      setState(() {});
+    } else {
+      if (_storyController._state?.isVideoInitialized == true) await _storyController.videoDispose();
+      setState(() {});
+    }
+
     widget.pageController?.addListener(_onPageControllerUpdate);
     widget.buttonData.isWatched?.call(_curSegmentIndex);
   }
@@ -85,12 +84,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
       widget.onStoryComplete.call(false);
     }
     setState(() {});
-  }
-
-  initializeVideo() {
-    _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.buttonData.backgroundImage[_curSegmentIndex]));
-    _videoController.initialize().then((value) => setState(() {}));
-    _videoController.play();
   }
 
   Widget _buildCloseButton() {
@@ -150,6 +143,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         bottom: widget.buttonData.timlinePadding?.bottom ?? 0.0,
       ),
       child: StoryTimeline(
+        // videoController: _videoController,
         controller: _storyController,
         buttonData: widget.buttonData,
         allButtonDatas: widget.allButtonDatas,
@@ -179,16 +173,16 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
           borderRadius: BorderRadius.circular(16),
           child: Builder(
             builder: (context) {
-              if (videoContent) {
-                return _videoController.value.isInitialized
+              if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
+                return _storyController._state?.isVideoInitialized ?? false
                     ? Builder(builder: (context) {
                         if (_offsetY == 0.0) _storyController.unpause();
                         return AspectRatio(
-                          aspectRatio: _videoController.value.aspectRatio,
+                          aspectRatio: _storyController._state!.videoController.value.aspectRatio,
                           child: Stack(
                             alignment: Alignment.bottomCenter,
                             children: <Widget>[
-                              VideoPlayer(_videoController),
+                              VideoPlayer(_storyController._state!.videoController),
                             ],
                           ),
                         );
@@ -301,7 +295,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _pointerDownMillis = _stopwatch.elapsedMilliseconds;
                   _pointerDownPosition = event.position;
                   _storyController.pause();
-                  if (videoContent) _videoController.pause();
+                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause();
                 },
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
@@ -327,7 +321,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     }
                   }
                   _storyController.unpause();
-                  if (videoContent) _videoController.play();
+                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPlay();
                 },
                 onPointerMove: (PointerMoveEvent event) {
                   if (event.delta.dy > 0) {
@@ -337,7 +331,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   } else if (event.delta.dy < -10 && event.delta.dx == 0) {
                     widget.fingerSwipeUp(_curSegmentIndex, widget.currentIndex);
                     _storyController.pause();
-                    if (videoContent) _videoController.pause();
+                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause();
                   }
                 },
                 child: _buildPageContent(),
@@ -363,7 +357,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     widget.pageController?.removeListener(_onPageControllerUpdate);
     _stopwatch.stop();
     _storyController.removeListener(_onTimelineEvent);
-    if (videoContent) _videoController.dispose();
+
     super.dispose();
   }
 
@@ -474,6 +468,22 @@ class StoryTimelineController {
   void dispose() {
     _listeners.clear();
   }
+
+  Future videoInit() async {
+    await _state?.videoInit();
+  }
+
+  void videoPlay() {
+    _state?.videoPlay();
+  }
+
+  void videoPause() {
+    _state?.videoPause();
+  }
+
+  Future videoDispose() async {
+    await _state?.videoDispose();
+  }
 }
 
 class StoryTimeline extends StatefulWidget {
@@ -498,11 +508,14 @@ class StoryTimeline extends StatefulWidget {
 
 class _StoryTimelineState extends State<StoryTimeline> {
   late Timer _timer;
+  late VideoPlayerController videoController;
   int _accumulatedTime = 0;
   int _maxAccumulator = 0;
   bool _isPaused = true;
   bool _isKeyboardOpened = false;
   bool _isTimelineAvailable = true;
+  bool _isVideoInitialized = false;
+  bool get isVideoInitialized => _isVideoInitialized;
 
   @override
   void initState() {
@@ -543,15 +556,33 @@ class _StoryTimelineState extends State<StoryTimeline> {
     }
   }
 
-  void _onStoryComplete() {
+  void _onStoryComplete() async {
     widget.buttonData.markAsWatched();
     widget.controller._onStoryComplete();
+    _isVideoInitialized = false;
+
+    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
+      await videoInit();
+    } else {
+      print('_onStoryComplete IMAGE');
+      if (isVideoInitialized == true) await videoDispose();
+    }
   }
 
-  void _onSegmentComplete() {
+  void _onSegmentComplete() async {
+    _isVideoInitialized = false;
+
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.isWatched?.call(_curSegmentIndex);
     }
+
+    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
+      await videoInit();
+    } else {
+      print('_onSegmentComplete IMAGE');
+      if (isVideoInitialized == true) await videoDispose();
+    }
+
     widget.controller._onSegmentComplete();
   }
 
@@ -628,6 +659,30 @@ class _StoryTimelineState extends State<StoryTimeline> {
         _onSegmentComplete();
       }
     }
+  }
+
+  Future videoInit() async {
+    videoController = VideoPlayerController.networkUrl(Uri.parse(widget.buttonData.backgroundImage[_curSegmentIndex]));
+
+    await videoController.initialize().then((value) {
+      videoPlay();
+      setState(() {
+        _isVideoInitialized = true;
+      });
+      print('-------------------------VIDEO YÜKLENDİ---------------------------');
+    });
+  }
+
+  void videoPlay() {
+    videoController.play();
+  }
+
+  void videoPause() {
+    videoController.pause();
+  }
+
+  Future videoDispose() async {
+    await videoController.dispose();
   }
 
   void pause() {

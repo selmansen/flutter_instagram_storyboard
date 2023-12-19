@@ -47,7 +47,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   ];
 
   final List<String> segmentList = [
-    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://budyboo-medias-stage.s3.eu-central-1.amazonaws.com/draft/64f990422edab1407264303e/high/2e39ae71-57db-457e-b5ab-7301b4a29199',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
@@ -55,11 +55,11 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   ];
 
   final List<String> mediaTypeList = [
-    'video',
-    'video',
-    'video',
-    'video',
-    'video',
+    'VIDEO',
+    'IMAGE',
+    'IMAGE',
+    'IMAGE',
+    'IMAGE',
   ];
 
   @override
