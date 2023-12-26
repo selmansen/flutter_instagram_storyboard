@@ -143,7 +143,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
         bottom: widget.buttonData.timlinePadding?.bottom ?? 0.0,
       ),
       child: StoryTimeline(
-        // videoController: _videoController,
         controller: _storyController,
         buttonData: widget.buttonData,
         allButtonDatas: widget.allButtonDatas,
@@ -183,6 +182,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                             alignment: Alignment.bottomCenter,
                             children: <Widget>[
                               VideoPlayer(_storyController._state!.videoController),
+                              widget.buttonData.storyPages[_curSegmentIndex],
                             ],
                           ),
                         );
