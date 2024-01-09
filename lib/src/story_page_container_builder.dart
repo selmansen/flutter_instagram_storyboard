@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
 import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
+import 'package:video_player/video_player.dart';
 
 class StoryPageContainerBuilder extends StatefulWidget {
   final Animation<double> animation;
@@ -19,6 +20,7 @@ class StoryPageContainerBuilder extends StatefulWidget {
 
 class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> with SetStateAfterFrame, FirstBuildMixin {
   late PageController _pageController;
+  late VideoPlayerController videoController;
   late IStoryPageTransform _storyPageTransform;
   static const double kMaxPageOverscroll = .2;
   int _currentPage = 0;
@@ -123,7 +125,11 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
     }
   }
 
-  void _afterFirstBuild() {
+  void _afterFirstBuild() async {
+    if (widget.settings.buttonData.mediaType?[widget.settings.buttonData.currentSegmentIndex] == 'VIDEO' && mounted) {
+      await widget.settings.buttonData.storyController?.videoInit(null);
+      setState(() {});
+    }
     if (mounted) {
       _pageWidth = context.size!.width;
       _totalWidth = _pageWidth * (widget.settings.allButtonDatas.length - 1);
@@ -220,9 +226,14 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                   child: PageView.builder(
                     physics: _storyPageTransform.pageScrollPhysics,
                     controller: _pageController,
-                    onPageChanged: (value) {
+                    onPageChanged: (value) async {
                       if (widget.settings.buttonData.currentSegmentIndex == (widget.settings.buttonData.storyPages.length - 1)) {
                         widget.settings.buttonData.markAsWatched();
+                      }
+                      if (widget.settings.buttonData.mediaType?[lateCurrentIndex] == 'VIDEO' && mounted) {
+                        await widget.settings.buttonData.storyController?.videoInit(null);
+                      } else {
+                        widget.settings.buttonData.storyController?.videoDispose();
                       }
                       FocusManager.instance.primaryFocus?.unfocus();
                     },

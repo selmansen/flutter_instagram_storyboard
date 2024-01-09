@@ -55,13 +55,13 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
 
   @override
   void didFirstBuildFinish(BuildContext context) async {
-    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO' && mounted) {
-      await _storyController.videoInit(null);
-      setState(() {});
-    }
-
     widget.pageController?.addListener(_onPageControllerUpdate);
     widget.buttonData.isWatched?.call(_curSegmentIndex);
+
+    // if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO' && mounted) {
+    //   await _storyController.videoInit(null);
+    //   setState(() {});
+    // }
   }
 
   void _onPageControllerUpdate() {
@@ -97,6 +97,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
             if (widget.onClosePressed != null) {
               widget.onClosePressed!.call();
               _storyController.videoDispose();
+              setState(() {});
             } else {
               Navigator.of(context).pop();
             }
@@ -297,8 +298,9 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                 },
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
-                    Navigator.of(context).pop();
                     _storyController.videoDispose();
+                    setState(() {});
+                    Navigator.of(context).pop();
                   } else {
                     setState(() {
                       _offsetY = 0.0;
@@ -559,12 +561,12 @@ class _StoryTimelineState extends State<StoryTimeline> {
     widget.buttonData.markAsWatched();
     widget.controller._onStoryComplete();
 
-    if (widget.buttonData.mediaType?[0] == 'VIDEO') {
-      await videoInit(0);
-    } else {
-      print('-------------------------STORY AKIŞI TAMAMLANDI---------------------------');
-      await videoDispose();
-    }
+    // if (widget.buttonData.mediaType?[0] == 'VIDEO') {
+    //   await videoInit(0);
+    // } else {
+    //   print('-------------------------STORY AKIŞI TAMAMLANDI---------------------------');
+    //   await videoDispose();
+    // }
   }
 
   void _onSegmentComplete() async {
@@ -662,11 +664,10 @@ class _StoryTimelineState extends State<StoryTimeline> {
 
     await videoController.initialize().then((value) {
       videoPlay();
-      setState(() {
-        _isVideoInitialized = true;
-      });
       print('-------------------------VIDEO YÜKLENDİ---------------------------');
     });
+    _isVideoInitialized = true;
+    setState(() {});
   }
 
   void videoPlay() {
@@ -682,9 +683,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
       videoController.dispose();
       print('-------------------------VIDEO CONTROLLER DISPOSE---------------------------');
     }
-    setState(() {
-      _isVideoInitialized = false;
-    });
+    _isVideoInitialized = false;
   }
 
   void pause() {
