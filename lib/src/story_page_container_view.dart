@@ -55,11 +55,8 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
 
   @override
   void didFirstBuildFinish(BuildContext context) async {
-    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
-      await _storyController.videoInit();
-      setState(() {});
-    } else {
-      if (_storyController._state?.isVideoInitialized == true) await _storyController.videoDispose();
+    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO' && mounted) {
+      await _storyController.videoInit(null);
       setState(() {});
     }
 
@@ -99,6 +96,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
           onPressed: () {
             if (widget.onClosePressed != null) {
               widget.onClosePressed!.call();
+              _storyController.videoDispose();
             } else {
               Navigator.of(context).pop();
             }
@@ -300,6 +298,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
                     Navigator.of(context).pop();
+                    _storyController.videoDispose();
                   } else {
                     setState(() {
                       _offsetY = 0.0;
@@ -356,7 +355,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   void dispose() {
     widget.pageController?.removeListener(_onPageControllerUpdate);
     _stopwatch.stop();
-    _storyController.videoDispose();
     _storyController.removeListener(_onTimelineEvent);
 
     super.dispose();
@@ -470,8 +468,8 @@ class StoryTimelineController {
     _listeners.clear();
   }
 
-  Future videoInit() async {
-    await _state?.videoInit();
+  Future videoInit(int? segmentIndex) async {
+    await _state?.videoInit(segmentIndex);
   }
 
   void videoPlay() {
@@ -560,28 +558,25 @@ class _StoryTimelineState extends State<StoryTimeline> {
   void _onStoryComplete() async {
     widget.buttonData.markAsWatched();
     widget.controller._onStoryComplete();
-    _isVideoInitialized = false;
 
-    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
-      await videoInit();
+    if (widget.buttonData.mediaType?[0] == 'VIDEO') {
+      await videoInit(0);
     } else {
-      print('_onStoryComplete IMAGE');
-      if (isVideoInitialized == true) await videoDispose();
+      print('-------------------------STORY AKIŞI TAMAMLANDI---------------------------');
+      await videoDispose();
     }
   }
 
   void _onSegmentComplete() async {
-    _isVideoInitialized = false;
-
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.isWatched?.call(_curSegmentIndex);
     }
 
     if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
-      await videoInit();
+      await videoInit(null);
     } else {
-      print('_onSegmentComplete IMAGE');
-      if (isVideoInitialized == true) await videoDispose();
+      print('-------------------------STORY SEGMENTİ TAMAMLANDI---------------------------');
+      await videoDispose();
     }
 
     widget.controller._onSegmentComplete();
@@ -662,8 +657,8 @@ class _StoryTimelineState extends State<StoryTimeline> {
     }
   }
 
-  Future videoInit() async {
-    videoController = VideoPlayerController.networkUrl(Uri.parse(widget.buttonData.backgroundImage[_curSegmentIndex]));
+  Future videoInit(int? segmentIndex) async {
+    videoController = VideoPlayerController.networkUrl(Uri.parse(widget.buttonData.backgroundImage[segmentIndex ?? _curSegmentIndex]));
 
     await videoController.initialize().then((value) {
       videoPlay();
@@ -682,8 +677,14 @@ class _StoryTimelineState extends State<StoryTimeline> {
     videoController.pause();
   }
 
-  Future videoDispose() async {
-    await videoController.dispose();
+  videoDispose() async {
+    if (isVideoInitialized == true) {
+      videoController.dispose();
+      print('-------------------------VIDEO CONTROLLER DISPOSE---------------------------');
+    }
+    setState(() {
+      _isVideoInitialized = false;
+    });
   }
 
   void pause() {
