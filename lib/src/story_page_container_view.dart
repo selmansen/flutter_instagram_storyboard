@@ -93,7 +93,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
           onPressed: () {
             if (widget.onClosePressed != null) {
               widget.onClosePressed!.call();
-              _storyController.videoDispose(nativeVideoPlayerController);
+              _storyController.videoDispose();
             } else {
               Navigator.of(context).pop();
             }
@@ -177,6 +177,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                       NativeVideoPlayerView(
                         onViewReady: (controller) async {
                           nativeVideoPlayerController = controller;
+                          _storyController._state?.nativeVideoPlayerController = nativeVideoPlayerController;
                           await nativeVideoPlayerController?.setVolume(1);
                           nativeVideoPlayerController?.play();
 
@@ -187,7 +188,9 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
 
                           await nativeVideoPlayerController?.loadVideoSource(videoSource);
 
-                          nativeVideoPlayerController?.onPlaybackReady.addListener(() {});
+                          nativeVideoPlayerController?.onPlaybackReady.addListener(() async {
+                            await nativeVideoPlayerController?.setVolume(1);
+                          });
 
                           nativeVideoPlayerController?.onPlaybackEnded.addListener(() {
                             nativeVideoPlayerController?.stop();
@@ -299,11 +302,11 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _pointerDownMillis = _stopwatch.elapsedMilliseconds;
                   _pointerDownPosition = event.position;
                   _storyController.pause();
-                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause(nativeVideoPlayerController);
+                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause();
                 },
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
-                    _storyController.videoDispose(nativeVideoPlayerController);
+                    _storyController.videoDispose();
                     Navigator.of(context).pop();
                   } else {
                     setState(() {
@@ -327,7 +330,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   }
                   if (_offsetY < MediaQuery.of(context).size.height * 0.1) {
                     _storyController.unpause();
-                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPlay(nativeVideoPlayerController);
+                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPlay();
                   }
                 },
                 onPointerMove: (PointerMoveEvent event) {
@@ -338,7 +341,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   } else if (event.delta.dy < -10 && event.delta.dx == 0) {
                     widget.fingerSwipeUp(_curSegmentIndex, widget.currentIndex);
                     _storyController.pause();
-                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause(nativeVideoPlayerController);
+                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause();
                   }
                 },
                 child: _buildPageContent(),
@@ -476,16 +479,16 @@ class StoryTimelineController {
     _listeners.clear();
   }
 
-  void videoPlay(NativeVideoPlayerController? controller) {
-    _state?.videoPlay(controller);
+  void videoPlay() {
+    _state?.videoPlay();
   }
 
-  void videoPause(NativeVideoPlayerController? controller) {
-    _state?.videoPause(controller);
+  void videoPause() {
+    _state?.videoPause();
   }
 
-  Future videoDispose(NativeVideoPlayerController? controller) async {
-    await _state?.videoDispose(controller);
+  Future videoDispose() async {
+    await _state?.videoDispose();
   }
 }
 
@@ -517,6 +520,7 @@ class _StoryTimelineState extends State<StoryTimeline> {
   bool _isPaused = true;
   bool _isKeyboardOpened = false;
   bool _isTimelineAvailable = true;
+  NativeVideoPlayerController? nativeVideoPlayerController;
 
   @override
   void initState() {
@@ -645,22 +649,22 @@ class _StoryTimelineState extends State<StoryTimeline> {
     }
   }
 
-  void videoPlay(NativeVideoPlayerController? controller) {
-    if (controller != null) {
-      controller.play();
+  void videoPlay() {
+    if (nativeVideoPlayerController != null) {
+      nativeVideoPlayerController?.play();
     }
   }
 
-  void videoPause(NativeVideoPlayerController? controller) {
-    if (controller != null) {
-      controller.pause();
+  void videoPause() {
+    if (nativeVideoPlayerController != null) {
+      nativeVideoPlayerController?.pause();
     }
   }
 
-  videoDispose(NativeVideoPlayerController? controller) async {
-    if (controller != null) {
-      controller.stop();
-      controller.removeListener(() {
+  videoDispose() async {
+    if (nativeVideoPlayerController != null) {
+      nativeVideoPlayerController?.stop();
+      nativeVideoPlayerController?.removeListener(() {
         setState(() {});
       });
     }
