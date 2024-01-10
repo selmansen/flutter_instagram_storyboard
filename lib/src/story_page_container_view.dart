@@ -45,8 +45,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   double _pageValue = 0.0;
   double _offsetY = 0.0;
   NativeVideoPlayerController? nativeVideoPlayerController;
-  bool _isVideoInitialized = false;
-  bool get isVideoInitialized => _isVideoInitialized;
 
   @override
   void initState() {
@@ -171,7 +169,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
             builder: (context) {
               if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
                 return Builder(builder: (context) {
-                  if (_isVideoInitialized && _offsetY == 0.0) _storyController.unpause();
+                  if (_offsetY == 0.0) _storyController.unpause();
 
                   return Stack(
                     alignment: Alignment.bottomCenter,
@@ -189,32 +187,13 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
 
                           await nativeVideoPlayerController?.loadVideoSource(videoSource);
 
-                          nativeVideoPlayerController?.onPlaybackReady.addListener(() {
-                            setState(() {
-                              _isVideoInitialized = true;
-                            });
-                          });
+                          nativeVideoPlayerController?.onPlaybackReady.addListener(() {});
 
-                          nativeVideoPlayerController?.onPlaybackStatusChanged.addListener(() {
-                            final playbackStatus = controller.playbackInfo?.status;
-                            print(playbackStatus);
-                            if (playbackStatus == PlaybackStatus.playing) {}
-                          });
                           nativeVideoPlayerController?.onPlaybackEnded.addListener(() {
                             nativeVideoPlayerController?.stop();
-                            setState(() {
-                              _isVideoInitialized = false;
-                            });
                           });
                         },
                       ),
-                      if (!_isVideoInitialized)
-                        const Center(
-                          child: CircularProgressIndicator(
-                            backgroundColor: Colors.transparent,
-                            color: Colors.white,
-                          ),
-                        ),
                     ],
                   );
                 });
