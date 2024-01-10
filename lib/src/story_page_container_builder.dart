@@ -126,10 +126,10 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
   }
 
   void _afterFirstBuild() async {
-    if (widget.settings.buttonData.mediaType?[widget.settings.buttonData.currentSegmentIndex] == 'VIDEO' && mounted) {
-      await widget.settings.buttonData.storyController?.videoInit(null);
-      setState(() {});
-    }
+    // if (widget.settings.buttonData.mediaType?[widget.settings.buttonData.currentSegmentIndex] == 'VIDEO' && mounted) {
+    //   await widget.settings.buttonData.storyController?.videoInit(null);
+    //   setState(() {});
+    // }
     if (mounted) {
       _pageWidth = context.size!.width;
       _totalWidth = _pageWidth * (widget.settings.allButtonDatas.length - 1);
@@ -230,11 +230,11 @@ class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> w
                       if (widget.settings.buttonData.currentSegmentIndex == (widget.settings.buttonData.storyPages.length - 1)) {
                         widget.settings.buttonData.markAsWatched();
                       }
-                      if (widget.settings.buttonData.mediaType?[lateCurrentIndex] == 'VIDEO' && mounted) {
-                        await widget.settings.buttonData.storyController?.videoInit(null);
-                      } else {
-                        widget.settings.buttonData.storyController?.videoDispose();
-                      }
+                      // widget.settings.buttonData.storyController?.videoDispose();
+
+                      // if (widget.settings.buttonData.mediaType?[lateCurrentIndex] == 'VIDEO' && mounted) {
+                      //   await widget.settings.buttonData.storyController?.videoInit(null);
+                      // }
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
                     itemBuilder: ((context, index) {

@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
+import 'package:native_video_player/native_video_player.dart';
 import 'package:video_player/video_player.dart';
 
 class StoryPageContainerView extends StatefulWidget {
@@ -43,6 +44,9 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   int _pointerDownMillis = 0;
   double _pageValue = 0.0;
   double _offsetY = 0.0;
+  NativeVideoPlayerController? nativeVideoPlayerController;
+  bool _isVideoInitialized = false;
+  bool get isVideoInitialized => _isVideoInitialized;
 
   @override
   void initState() {
@@ -57,11 +61,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   void didFirstBuildFinish(BuildContext context) async {
     widget.pageController?.addListener(_onPageControllerUpdate);
     widget.buttonData.isWatched?.call(_curSegmentIndex);
-
-    // if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO' && mounted) {
-    //   await _storyController.videoInit(null);
-    //   setState(() {});
-    // }
   }
 
   void _onPageControllerUpdate() {
@@ -96,8 +95,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
           onPressed: () {
             if (widget.onClosePressed != null) {
               widget.onClosePressed!.call();
-              _storyController.videoDispose();
-              setState(() {});
+              _storyController.videoDispose(nativeVideoPlayerController);
             } else {
               Navigator.of(context).pop();
             }
@@ -172,26 +170,54 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
           child: Builder(
             builder: (context) {
               if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
-                return _storyController._state?.isVideoInitialized ?? false
-                    ? Builder(builder: (context) {
-                        if (_offsetY == 0.0) _storyController.unpause();
-                        return AspectRatio(
-                          aspectRatio: _storyController._state!.videoController.value.aspectRatio,
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: <Widget>[
-                              VideoPlayer(_storyController._state!.videoController),
-                              widget.buttonData.storyPages[_curSegmentIndex],
-                            ],
+                return Builder(builder: (context) {
+                  if (_isVideoInitialized && _offsetY == 0.0) _storyController.unpause();
+
+                  return Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      NativeVideoPlayerView(
+                        onViewReady: (controller) async {
+                          nativeVideoPlayerController = controller;
+                          await nativeVideoPlayerController?.setVolume(1);
+                          nativeVideoPlayerController?.play();
+
+                          final videoSource = await VideoSource.init(
+                            path: widget.buttonData.backgroundImage[_curSegmentIndex],
+                            type: VideoSourceType.network,
+                          );
+
+                          await nativeVideoPlayerController?.loadVideoSource(videoSource);
+
+                          nativeVideoPlayerController?.onPlaybackReady.addListener(() {
+                            setState(() {
+                              _isVideoInitialized = true;
+                            });
+                          });
+
+                          nativeVideoPlayerController?.onPlaybackStatusChanged.addListener(() {
+                            final playbackStatus = controller.playbackInfo?.status;
+                            print(playbackStatus);
+                            if (playbackStatus == PlaybackStatus.playing) {}
+                          });
+                          nativeVideoPlayerController?.onPlaybackEnded.addListener(() {
+                            nativeVideoPlayerController?.stop();
+                            setState(() {
+                              _isVideoInitialized = false;
+                            });
+                          });
+                        },
+                      ),
+                      if (!_isVideoInitialized)
+                        const Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.transparent,
+                            color: Colors.white,
                           ),
-                        );
-                      })
-                    : const Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.transparent,
-                          color: Colors.white,
                         ),
-                      );
+                    ],
+                  );
+                });
               } else if (widget.buttonData.mediaType?[_curSegmentIndex] == "IMAGE") {
                 return CachedNetworkImage(
                   errorWidget: (context, url, error) => Container(
@@ -294,12 +320,11 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   _pointerDownMillis = _stopwatch.elapsedMilliseconds;
                   _pointerDownPosition = event.position;
                   _storyController.pause();
-                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause();
+                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause(nativeVideoPlayerController);
                 },
                 onPointerUp: (PointerUpEvent event) {
                   if (_offsetY > MediaQuery.of(context).size.height * 0.1) {
-                    _storyController.videoDispose();
-                    setState(() {});
+                    _storyController.videoDispose(nativeVideoPlayerController);
                     Navigator.of(context).pop();
                   } else {
                     setState(() {
@@ -321,8 +346,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                       }
                     }
                   }
-                  _storyController.unpause();
-                  if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPlay();
+                  if (_offsetY < MediaQuery.of(context).size.height * 0.1) {
+                    _storyController.unpause();
+                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPlay(nativeVideoPlayerController);
+                  }
                 },
                 onPointerMove: (PointerMoveEvent event) {
                   if (event.delta.dy > 0) {
@@ -332,7 +359,7 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                   } else if (event.delta.dy < -10 && event.delta.dx == 0) {
                     widget.fingerSwipeUp(_curSegmentIndex, widget.currentIndex);
                     _storyController.pause();
-                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause();
+                    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') _storyController._state?.videoPause(nativeVideoPlayerController);
                   }
                 },
                 child: _buildPageContent(),
@@ -470,20 +497,16 @@ class StoryTimelineController {
     _listeners.clear();
   }
 
-  Future videoInit(int? segmentIndex) async {
-    await _state?.videoInit(segmentIndex);
+  void videoPlay(NativeVideoPlayerController? controller) {
+    _state?.videoPlay(controller);
   }
 
-  void videoPlay() {
-    _state?.videoPlay();
+  void videoPause(NativeVideoPlayerController? controller) {
+    _state?.videoPause(controller);
   }
 
-  void videoPause() {
-    _state?.videoPause();
-  }
-
-  Future videoDispose() async {
-    await _state?.videoDispose();
+  Future videoDispose(NativeVideoPlayerController? controller) async {
+    await _state?.videoDispose(controller);
   }
 }
 
@@ -515,8 +538,6 @@ class _StoryTimelineState extends State<StoryTimeline> {
   bool _isPaused = true;
   bool _isKeyboardOpened = false;
   bool _isTimelineAvailable = true;
-  bool _isVideoInitialized = false;
-  bool get isVideoInitialized => _isVideoInitialized;
 
   @override
   void initState() {
@@ -560,25 +581,11 @@ class _StoryTimelineState extends State<StoryTimeline> {
   void _onStoryComplete() async {
     widget.buttonData.markAsWatched();
     widget.controller._onStoryComplete();
-
-    // if (widget.buttonData.mediaType?[0] == 'VIDEO') {
-    //   await videoInit(0);
-    // } else {
-    //   print('-------------------------STORY AKIŞI TAMAMLANDI---------------------------');
-    //   await videoDispose();
-    // }
   }
 
   void _onSegmentComplete() async {
     if (widget.buttonData.storyWatchedContract == StoryWatchedContract.onSegmentEnd) {
       widget.buttonData.isWatched?.call(_curSegmentIndex);
-    }
-
-    if (widget.buttonData.mediaType?[_curSegmentIndex] == 'VIDEO') {
-      await videoInit(null);
-    } else {
-      print('-------------------------STORY SEGMENTİ TAMAMLANDI---------------------------');
-      await videoDispose();
     }
 
     widget.controller._onSegmentComplete();
@@ -659,31 +666,25 @@ class _StoryTimelineState extends State<StoryTimeline> {
     }
   }
 
-  Future videoInit(int? segmentIndex) async {
-    videoController = VideoPlayerController.networkUrl(Uri.parse(widget.buttonData.backgroundImage[segmentIndex ?? _curSegmentIndex]));
-
-    await videoController.initialize().then((value) {
-      videoPlay();
-      print('-------------------------VIDEO YÜKLENDİ---------------------------');
-    });
-    _isVideoInitialized = true;
-    setState(() {});
-  }
-
-  void videoPlay() {
-    videoController.play();
-  }
-
-  void videoPause() {
-    videoController.pause();
-  }
-
-  videoDispose() async {
-    if (isVideoInitialized == true) {
-      videoController.dispose();
-      print('-------------------------VIDEO CONTROLLER DISPOSE---------------------------');
+  void videoPlay(NativeVideoPlayerController? controller) {
+    if (controller != null) {
+      controller.play();
     }
-    _isVideoInitialized = false;
+  }
+
+  void videoPause(NativeVideoPlayerController? controller) {
+    if (controller != null) {
+      controller.pause();
+    }
+  }
+
+  videoDispose(NativeVideoPlayerController? controller) async {
+    if (controller != null) {
+      controller.stop();
+      controller.removeListener(() {
+        setState(() {});
+      });
+    }
   }
 
   void pause() {
