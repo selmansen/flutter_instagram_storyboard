@@ -6,10 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:native_video_player/native_video_player.dart';
-import 'package:video_player/video_player.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 
 class StoryPageContainerView extends StatefulWidget {
   final StoryButtonData buttonData;
@@ -47,15 +44,12 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   double _pageValue = 0.0;
   double _offsetY = 0.0;
   NativeVideoPlayerController? nativeVideoPlayerController;
-  // late final player = Player();
-  // late final newVideoController = VideoController(player);
 
   @override
   void initState() {
     _storyController = widget.buttonData.storyController ?? StoryTimelineController();
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
-    // player.open(Media(widget.buttonData.backgroundImage[_curSegmentIndex]));
     super.initState();
   }
 
@@ -191,7 +185,6 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                           await loadVideoSource();
                         },
                       ),
-                      // Video(controller: newVideoController),
                     ],
                   );
                 });
@@ -530,7 +523,6 @@ class StoryTimeline extends StatefulWidget {
 
 class _StoryTimelineState extends State<StoryTimeline> {
   late Timer _timer;
-  late VideoPlayerController videoController;
   int _accumulatedTime = 0;
   int _maxAccumulator = 0;
   bool _isPaused = true;

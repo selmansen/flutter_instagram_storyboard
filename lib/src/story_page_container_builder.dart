@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
 import 'package:flutter_instagram_storyboard/src/set_state_after_frame_mixin.dart';
-import 'package:video_player/video_player.dart';
 
 class StoryPageContainerBuilder extends StatefulWidget {
   final Animation<double> animation;
@@ -20,7 +19,6 @@ class StoryPageContainerBuilder extends StatefulWidget {
 
 class _StoryPageContainerBuilderState extends State<StoryPageContainerBuilder> with SetStateAfterFrame, FirstBuildMixin {
   late PageController _pageController;
-  late VideoPlayerController videoController;
   late IStoryPageTransform _storyPageTransform;
   static const double kMaxPageOverscroll = .2;
   int _currentPage = 0;
