@@ -6,8 +6,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
 import 'package:flutter_instagram_storyboard/src/first_build_mixin.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:native_video_player/native_video_player.dart';
 import 'package:video_player/video_player.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 class StoryPageContainerView extends StatefulWidget {
   final StoryButtonData buttonData;
@@ -45,13 +47,15 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
   double _pageValue = 0.0;
   double _offsetY = 0.0;
   NativeVideoPlayerController? nativeVideoPlayerController;
+  // late final player = Player();
+  // late final newVideoController = VideoController(player);
 
   @override
   void initState() {
     _storyController = widget.buttonData.storyController ?? StoryTimelineController();
     _stopwatch.start();
     _storyController.addListener(_onTimelineEvent);
-
+    // player.open(Media(widget.buttonData.backgroundImage[_curSegmentIndex]));
     super.initState();
   }
 
@@ -73,10 +77,14 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     return _pageValue % 1.0 == 0.0;
   }
 
-  void _onTimelineEvent(StoryTimelineEvent event) {
+  void _onTimelineEvent(StoryTimelineEvent event) async {
     if (event == StoryTimelineEvent.storyComplete) {
       widget.onStoryComplete.call(false);
     }
+    if (event == StoryTimelineEvent.segmentComplete) {
+      await loadVideoSource();
+    }
+
     setState(() {});
   }
 
@@ -180,23 +188,10 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                           _storyController._state?.nativeVideoPlayerController = nativeVideoPlayerController;
                           await nativeVideoPlayerController?.setVolume(1);
                           nativeVideoPlayerController?.play();
-
-                          final videoSource = await VideoSource.init(
-                            path: widget.buttonData.backgroundImage[_curSegmentIndex],
-                            type: VideoSourceType.network,
-                          );
-
-                          await nativeVideoPlayerController?.loadVideoSource(videoSource);
-
-                          nativeVideoPlayerController?.onPlaybackReady.addListener(() async {
-                            await nativeVideoPlayerController?.setVolume(1);
-                          });
-
-                          nativeVideoPlayerController?.onPlaybackEnded.addListener(() {
-                            nativeVideoPlayerController?.stop();
-                          });
+                          await loadVideoSource();
                         },
                       ),
+                      // Video(controller: newVideoController),
                     ],
                   );
                 });
@@ -362,11 +357,32 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
     );
   }
 
+  Future<void> loadVideoSource() async {
+    try {
+      final videoSource = await VideoSource.init(
+        type: VideoSourceType.network,
+        path: widget.buttonData.backgroundImage[_curSegmentIndex],
+      );
+      await nativeVideoPlayerController?.loadVideoSource(videoSource);
+
+      nativeVideoPlayerController?.onPlaybackReady.addListener(() {
+        nativeVideoPlayerController?.play();
+      });
+
+      nativeVideoPlayerController?.onPlaybackEnded.addListener(() {
+        nativeVideoPlayerController?.stop();
+      });
+    } catch (e) {
+      debugPrint('Düzenleme ekranını açarken bir hata oluştu $e');
+    }
+  }
+
   @override
   void dispose() {
     widget.pageController?.removeListener(_onPageControllerUpdate);
     _stopwatch.stop();
     _storyController.removeListener(_onTimelineEvent);
+    // player.dispose();
 
     super.dispose();
   }

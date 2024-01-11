@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
+import 'package:media_kit/media_kit.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -48,7 +51,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
 
   final List<String> segmentList = [
     'https://budyboo-medias-stage.s3.eu-central-1.amazonaws.com/story/64f990422edab1407264303e/high/18d7c394-3160-40af-bb61-810b469fbd9d',
-    'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+    'https://budyboo-medias-stage.s3.eu-central-1.amazonaws.com/story/64f990422edab1407264303e/high/523f8356-50fe-4fa9-a6b4-ffdada0c7738',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     'https://budyboo-medias-stage.s3.eu-central-1.amazonaws.com/story/64f990422edab1407264303e/high/18d7c394-3160-40af-bb61-810b469fbd9d',
     'https://images.pexels.com/photos/214574/pexels-photo-214574.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
@@ -56,7 +59,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
 
   final List<String> mediaTypeList = [
     'VIDEO',
-    'IMAGE',
+    'VIDEO',
     'IMAGE',
     'VIDEO',
     'IMAGE',
@@ -109,7 +112,13 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   }
 
   _generateStoryButtonDataList() {
-    final durationList = List.generate(storyList.length, (index) => Duration(milliseconds: 10000));
+    final durationList = List.generate(storyList.length, (index) {
+      if (index % 2 != 0) {
+        return Duration(milliseconds: 7000);
+      } else {
+        return Duration(milliseconds: 3000);
+      }
+    });
 
     for (int i = 0; i < storyList.length; i++) {
       storyButtonDataList.add(
