@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_storyboard/flutter_instagram_storyboard.dart';
-import 'package:media_kit/media_kit.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
 
