@@ -178,6 +178,9 @@ class _StoryPageContainerViewState extends State<StoryPageContainerView> with Fi
                     children: [
                       NativeVideoPlayerView(
                         onViewReady: (controller) async {
+                          if(nativeVideoPlayerController == null) {
+                            await Future.delayed(kThemeAnimationDuration);
+                          }
                           nativeVideoPlayerController = controller;
                           _storyController._state?.nativeVideoPlayerController = nativeVideoPlayerController;
                           await nativeVideoPlayerController?.setVolume(1);
