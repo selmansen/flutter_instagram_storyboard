@@ -73,6 +73,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF130A29),
       appBar: AppBar(
         elevation: 0.0,
         title: const Text('Story Example'),
@@ -80,13 +81,15 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       body: Column(
         children: [
           StoryListView(
-            allStoryUploaded: false, // lazyload
+            allStoryUploaded: true, // lazyload
             bottomSafeHeight: _bottomSafeHeight,
             scrollController: _scrollController,
             listHeight: 100,
             paddingTop: 16,
             newStoryOnTap: () => print('new story'),
-            fingerSwipeUp: (currentSegmentIndex, currentIndex) => currentIndex == 0 ? print('fingerSwipeUp -> segmentIndex:$currentSegmentIndex, currentIndex:$currentIndex') : null,
+            fingerSwipeUp: (currentSegmentIndex, currentIndex) => currentIndex == 0
+                ? print('fingerSwipeUp -> segmentIndex:$currentSegmentIndex, currentIndex:$currentIndex')
+                : null,
             newStoryTitle: Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Text(
@@ -121,14 +124,17 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       storyButtonDataList.add(
         StoryButtonData(
           storyController: storyTimelineController[i],
-          allStoryWatched: false,
+          allStoryWatched: true,
           currentSegmentIndex: 0,
           backgroundImage: segmentList,
           mediaType: mediaTypeList,
           isWatched: (int storyIndex) => print('segment index $storyIndex'),
           buttonDecoration: _buildButtonDecoration(storyList[0]),
           child: _buildButtonChild('user $i'),
-          storyPages: [...segmentList.map((e) => _createDummyPage(text: '$i Want to buy a new car? Get our loan for the rest of your life!'))],
+          storyPages: [
+            ...segmentList
+                .map((e) => _createDummyPage(text: '$i Want to buy a new car? Get our loan for the rest of your life!'))
+          ],
           bottomBar: [...segmentList.map((e) => _buildMessageBar(activeIndex: i))],
           topBar: [
             ...segmentList.map(

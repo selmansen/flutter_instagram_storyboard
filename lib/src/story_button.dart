@@ -26,7 +26,9 @@ class StoryButton extends StatefulWidget {
   State<StoryButton> createState() => _StoryButtonState();
 }
 
-class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, FirstBuildMixin implements IButtonPositionable, IWatchMarkable {
+class _StoryButtonState extends State<StoryButton>
+    with SetStateAfterFrame, FirstBuildMixin
+    implements IButtonPositionable, IWatchMarkable {
   double? _buttonWidth;
 
   @override
@@ -119,10 +121,25 @@ class _StoryButtonState extends State<StoryButton> with SetStateAfterFrame, Firs
         AspectRatio(
           aspectRatio: widget.buttonData.aspectRatio,
           child: Container(
-            decoration: widget.buttonData.allStoryWatched ? widget.buttonData.watchBorderDecoration : widget.buttonData.borderDecoration,
-            child: Padding(
-              padding: EdgeInsets.all(
-                widget.buttonData.borderOffset,
+            padding: EdgeInsets.all(1),
+            decoration: BoxDecoration(
+              gradient: widget.buttonData.allStoryWatched == true
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFFFFFFFF),
+                        Color(0xFFA073FF),
+                      ],
+                    )
+                  : null,
+              color: widget.buttonData.allStoryWatched == false ? Color(0xFF2C2440) : null,
+              shape: BoxShape.circle,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: widget.buttonData.borderOffset, color: Color(0xFF130A29)),
+                shape: BoxShape.circle,
               ),
               child: Stack(
                 children: [
@@ -297,7 +314,8 @@ class StoryButtonData {
     ),
     this.borderOffset = 3.0,
   }) : assert(
-          segmentDuration[currentSegmentIndex].inMilliseconds % kStoryTimerTickMillis == 0 && segmentDuration[currentSegmentIndex].inMilliseconds >= 1000,
+          segmentDuration[currentSegmentIndex].inMilliseconds % kStoryTimerTickMillis == 0 &&
+              segmentDuration[currentSegmentIndex].inMilliseconds >= 1000,
           'Segment duration in milliseconds must be a multiple of $kStoryTimerTickMillis and not less than 1000 milliseconds',
         );
 }
