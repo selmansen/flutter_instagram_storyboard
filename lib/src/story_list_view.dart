@@ -165,20 +165,6 @@ class _StoryListViewState extends State<StoryListView> {
                       child: Column(
                         children: [
                           Container(
-                            width: widget.buttonWidth,
-                            height: widget.buttonWidth,
-                            padding: const EdgeInsets.all(1),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xFF641F8F),
-                                  Color(0xFFA046D9),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(widget.buttonWidth),
-                            ),
                             child: widget.newStoryIcon != null
                                 ? widget.newStoryIcon
                                 : Icon(Icons.add_a_photo_outlined, size: 24),
