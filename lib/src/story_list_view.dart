@@ -17,7 +17,7 @@ class StoryListView extends StatefulWidget {
   final ScrollController scrollController;
   final bool allStoryUploaded;
   final Widget? indicator;
-  final Widget? newStoryIcom;
+  final Widget? newStoryIcon;
   final Function()? newStoryOnTap;
   final Widget? newStoryTitle;
   final Widget? bottomBar;
@@ -41,7 +41,7 @@ class StoryListView extends StatefulWidget {
     required this.scrollController,
     this.allStoryUploaded = true,
     this.indicator,
-    this.newStoryIcom,
+    this.newStoryIcon,
     this.newStoryOnTap,
     this.newStoryTitle,
     this.bottomBar,
@@ -70,7 +70,8 @@ class _StoryListViewState extends State<StoryListView> {
           pageTransform: widget.pageTransform,
           storyListScrollController: widget.scrollController,
           bottomSafeHeight: widget.bottomSafeHeight,
-          fingerSwipeUp: (currentSegmentIndex, currentIndex) => widget.fingerSwipeUp != null ? widget.fingerSwipeUp!(currentSegmentIndex, currentIndex) : null,
+          fingerSwipeUp: (currentSegmentIndex, currentIndex) =>
+              widget.fingerSwipeUp != null ? widget.fingerSwipeUp!(currentSegmentIndex, currentIndex) : null,
         ),
         duration: buttonData.pageAnimationDuration,
       ),
@@ -121,7 +122,9 @@ class _StoryListViewState extends State<StoryListView> {
                       child: Container(
                         color: Colors.white,
                         child: Center(
-                          child: widget.newStoryIcom != null ? widget.newStoryIcom : Icon(Icons.add_a_photo_outlined, size: 24),
+                          child: widget.newStoryIcon != null
+                              ? widget.newStoryIcon
+                              : Icon(Icons.add_a_photo_outlined, size: 24),
                         ),
                       ),
                     ),
@@ -176,14 +179,9 @@ class _StoryListViewState extends State<StoryListView> {
                               ),
                               borderRadius: BorderRadius.circular(widget.buttonWidth),
                             ),
-                            child: ClipOval(
-                              child: Container(
-                                color: Colors.white,
-                                child: Center(
-                                  child: widget.newStoryIcom != null ? widget.newStoryIcom : Icon(Icons.add_a_photo_outlined, size: 24),
-                                ),
-                              ),
-                            ),
+                            child: widget.newStoryIcon != null
+                                ? widget.newStoryIcon
+                                : Icon(Icons.add_a_photo_outlined, size: 24),
                           ),
                           if (widget.newStoryTitle != null) widget.newStoryTitle!
                         ],
