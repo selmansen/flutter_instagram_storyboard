@@ -61,12 +61,7 @@ class _StoryButtonState extends State<StoryButton>
     }
     return SizedBox(
       width: _buttonWidth,
-      child: widget.buttonData.allStoryWatched
-          ? Opacity(
-              opacity: .6,
-              child: widget.buttonData.child,
-            )
-          : widget.buttonData.child,
+      child: widget.buttonData.child,
     );
   }
 
@@ -123,7 +118,7 @@ class _StoryButtonState extends State<StoryButton>
           child: Container(
             padding: EdgeInsets.all(1),
             decoration: BoxDecoration(
-              gradient: widget.buttonData.allStoryWatched == true
+              gradient: widget.buttonData.allStoryWatched
                   ? LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -133,7 +128,7 @@ class _StoryButtonState extends State<StoryButton>
                       ],
                     )
                   : null,
-              color: widget.buttonData.allStoryWatched == false ? Color(0xFF2C2440) : null,
+              color: widget.buttonData.allStoryWatched ? Color(0xFF2C2440) : null,
               shape: BoxShape.circle,
             ),
             child: Container(
@@ -194,7 +189,7 @@ class StoryButtonData {
   /// after the story was watched
   /// the border will disappear
   void markAsWatched() {
-    allStoryWatched = true;
+    allStoryWatched = false;
     _iWatchMarkable?.markAsWatched();
   }
 
