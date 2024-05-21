@@ -118,7 +118,7 @@ class _StoryButtonState extends State<StoryButton>
           child: Container(
             padding: EdgeInsets.all(1),
             decoration: BoxDecoration(
-              gradient: widget.buttonData.allStoryWatched
+              gradient: widget.buttonData.allStoryWatched == true
                   ? LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -128,7 +128,7 @@ class _StoryButtonState extends State<StoryButton>
                       ],
                     )
                   : null,
-              color: widget.buttonData.allStoryWatched ? Color(0xFF2C2440) : null,
+              color: widget.buttonData.allStoryWatched == false ? Color(0xFF2C2440) : null,
               shape: BoxShape.circle,
             ),
             child: Container(

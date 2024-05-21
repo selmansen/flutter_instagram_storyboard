@@ -124,7 +124,7 @@ class _StoryExamplePageState extends State<StoryExamplePage> {
       storyButtonDataList.add(
         StoryButtonData(
           storyController: storyTimelineController[i],
-          allStoryWatched: true,
+          allStoryWatched: false,
           currentSegmentIndex: 0,
           backgroundImage: segmentList,
           mediaType: mediaTypeList,
